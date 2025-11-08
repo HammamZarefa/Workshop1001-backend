@@ -37,7 +37,8 @@ class UserFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function (User $user) {
-            $user->addMedia(asset('images/default_avtar.png'))
+            $user->addMedia(public_path('images/default_avatar.png'))
+                ->preservingOriginal()
                 ->toMediaCollection('avatars');
         });
     }
