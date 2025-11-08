@@ -18,9 +18,16 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
+        'phone',
+        'address',
         'password',
+        'is_admin',
+        'is_active',
+        'firebase_token',
+        'fcm_token',
     ];
 
     /**
@@ -43,6 +50,12 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
+            'is_active' => 'boolean',
         ];
+    }
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatars')->singleFile(); // صورة الملف الشخصي
     }
 }
