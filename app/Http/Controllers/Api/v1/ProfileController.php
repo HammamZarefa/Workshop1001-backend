@@ -20,10 +20,6 @@ class ProfileController extends Controller
     {
         $data = $request->validated();
 
-        if (isset($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        }
-
         $user = $request->user();
         $user->update($data);
 

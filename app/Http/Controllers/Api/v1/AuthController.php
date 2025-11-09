@@ -17,40 +17,44 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-
-
+        $data = $request->validated();
         $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone' => $request->phone,
-            'address' => $request->address,
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+            'phone' => $data['phone'],
+            'address' => $data['address'],
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $tokenName = $request->device_type ?? 'auth_token';
+        $token = $user->createToken($tokenName)->plainTextToken;
 
         return response()->json([
             'user' => new UserResource($user),
             'token' => $token,
-        ],201);
+            'token_type' => $tokenName,
+        ], 201);
     }
 
     public function login(LoginRequest $request)
     {
-        $user = \App\Models\User::where('email', $request->email)->first();
+        $data = $request->validated();
+        $user = User::where('email', $data['email'])->first();
 
-        if (!$user || !\Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($data['password'], $user->password)) {
             return response()->json([
                 'message' => 'Invalid credentials',
             ], 401);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $tokenName = $request->device_type ?? 'auth_token';
+        $token = $user->createToken($tokenName)->plainTextToken;
 
         return response()->json([
             'user' => new UserResource($user),
             'token' => $token,
+            'token_type' => $tokenName,
         ]);
     }
 

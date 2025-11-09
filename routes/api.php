@@ -10,8 +10,8 @@ Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     // استعادة كلمة المرور
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+//    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+//    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 // Routes محمية
     Route::middleware('auth:sanctum')->group(function () {
