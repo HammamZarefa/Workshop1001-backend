@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,7 +12,7 @@ class ProfileController extends Controller
 {
     public function show(Request $request)
     {
-        return response()->json($request->user());
+        return new UserResource($request->user());
     }
 
 
@@ -23,9 +24,10 @@ class ProfileController extends Controller
             $data['password'] = Hash::make($data['password']);
         }
 
-        $request->user()->update($data);
+        $user = $request->user();
+        $user->update($data);
 
-        return response()->json($request->user());
+        return new UserResource($user);
     }
 
     public function destroy(Request $request)
