@@ -1,40 +1,41 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
 
 class AuthController extends Controller
 {
  //register
-    public function register(Request $request)
-    {
-        $data = $request->validate([
+   public function register(Request $request)
+{
+    $data = $request->validate([
         'first_name' => 'required',
         'last_name'  => 'required',
-        'email'      => 'required|email|unique',
+        'email'      => 'required|email|unique:users,email',
         'password'   => 'required|min:6', 
         'phone'      => 'max:20',
         'address'    => 'string',
-        ]);
+    ]);
 
-        $user = User::create([
-        'first_name' => $data['first_name'],
-        'last_name'  => $data['last_name'],
-        'email'      => $data['email'],
-        'password'   => Hash::make($data['password']),
-        'phone'      => $data['phone'] ,
-        'address'    => $data['address'] ,
-        ]);
+   
+    $userData = array_merge($data, [
+        'password' => Hash::make($data['password']),
+    ]);
 
-        $token = $user->createToken('api-token')->plainTextToken;
+    $user = User::create($userData);
 
-        return response()->json([
-         'user' => $user,
+    $token = $user->createToken('api-token')->plainTextToken;
+
+    return response()->json([
+        'user' => $user,
         'token' => $token,
         'token_type' => 'Bearer',
     ], 201);
-    }
+}
+    
    //login
       public function login(Request $request)
     {
@@ -62,7 +63,12 @@ class AuthController extends Controller
     //profile
         public function profile(Request $request)
     {
-        return response()->json($request->user());
+            return response()->json([
+        'user' => $request->user(),
+        'token_from_header' => $request->bearerToken(),
+        'auth_check' => auth()->check(),
+    ]);
+
     }
 
     //logout
@@ -72,5 +78,9 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logout Successfully']);
+    }
+    public function test(Request $request){
+
+     return response()->json(['message' => ' Successfully']);
     }
 }
