@@ -2,29 +2,22 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
+    protected $model = User::class;
 
     /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
+     * تعريف بيانات وهمية لكل حقل.
      */
-    public function definition(): array
+    public function definition()
     {
         return [
-           'first_name' => fake()->firstName(),
+            'first_name' => fake()->firstName(),
             'last_name'  => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->unique()->phoneNumber(),
@@ -38,12 +31,14 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * إضافة صورة افتراضية لكل مستخدم عند إنشائه (Spatie Media)
      */
-    public function unverified(): static
+    public function configure()
     {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
+        return $this->afterCreating(function (User $user) {
+            $user->addMedia(public_path('images/default_avatar.png'))
+                ->preservingOriginal()
+                ->toMediaCollection('avatars');
+        });
     }
 }
