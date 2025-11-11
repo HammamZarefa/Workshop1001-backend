@@ -7,11 +7,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
-<<<<<<< HEAD
-=======
 
 
->>>>>>> 94462bd3665a2eebf59768ce840d2040098fac63
     /**
      * Transform the resource into an array.
      *
@@ -19,9 +16,6 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-<<<<<<< HEAD
-        return parent::toArray($request);
-=======
         return [
             'id' => $this->id,
             'first_name' => $this->first_name,
@@ -30,6 +24,5 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'address' => $this->address,
         ];
->>>>>>> 94462bd3665a2eebf59768ce840d2040098fac63
     }
 }

@@ -25,7 +25,7 @@ class RegisterRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:6',
             'phone' => ['required', 'regex:/^09\d{8}$/'],
             'address' => 'required|string|max:500',
         ];
