@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\ProfileController;
+use App\Http\Controllers\Api\v1\BannerController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -9,6 +10,7 @@ Route::prefix('v1')->group(function () {
 // تسجيل الدخول والتسجيل
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);
     // استعادة كلمة المرور
 //    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 //    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
