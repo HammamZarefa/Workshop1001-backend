@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\OnboardingController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Api\v1\HomeController;
 Route::prefix('v1')->group(function () {
 
         // تسجيل الدخول والتسجيل
