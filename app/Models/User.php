@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +13,6 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class User extends Authenticatable implements HasMedia
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, InteractsWithMedia, HasApiTokens;
 
     /**
@@ -63,7 +61,7 @@ class User extends Authenticatable implements HasMedia
     protected function password(): Attribute
     {
         return Attribute::make(
-            set: fn($value) => bcrypt($value)  // أو Hash::make($value)
+            set: fn($value) => bcrypt($value)
         );
     }
 
@@ -71,5 +69,4 @@ class User extends Authenticatable implements HasMedia
     {
         $this->addMediaCollection('avatars')->singleFile(); // صورة الملف الشخصي
     }
-
 }

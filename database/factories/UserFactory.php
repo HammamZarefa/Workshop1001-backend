@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class UserFactory extends Factory
 {
@@ -16,17 +17,15 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'phone' => $this->faker->unique()->phoneNumber(),
-            'address' => $this->faker->address(),
-            'password' => bcrypt('password'), // كلمة مرور افتراضية
-            'is_admin' => false,
-            'is_active' => true,
-            'firebase_token' => null,
-            'fcm_token' => null,
+            'first_name' => fake()->firstName(),
+            'last_name'  => fake()->lastName(),
+            'email' => fake()->unique()->safeEmail(),
+            'phone' => fake()->unique()->phoneNumber(),
+            'address' => fake()->address(),
             'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'is_active' => true, 
+            'is_admin' => false,
             'remember_token' => Str::random(10),
         ];
     }
