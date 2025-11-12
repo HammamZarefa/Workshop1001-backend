@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Api\v1\OnboardingController;
 use App\Http\Controllers\Api\v1\HomeController;
 use App\Http\Controllers\Api\v1\BannerController;
@@ -12,8 +13,8 @@ Route::prefix('v1')->group(function () {
 // تسجيل الدخول والتسجيل
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-    
-  
+
+
     // استعادة كلمة المرور
 //    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 //    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
@@ -26,7 +27,7 @@ Route::prefix('v1')->group(function () {
 
         // تسجيل الخروج وجلب بيانات المستخدم
         Route::post('/logout', [AuthController::class, 'logout']);
-        Route::get('/user', [AuthController::class, 'user']); 
+        Route::get('/user', [AuthController::class, 'user']);
         //onboarding
         Route::post('/onboarding', [OnboardingController::class, 'store']);
         Route::post('/onboarding/{id}', [OnboardingController::class, 'update']);
@@ -43,4 +44,22 @@ Route::prefix('v1')->group(function () {
         Route::delete('/', [ProfileController::class, 'destroy']); // حذف الحساب
         });
     });
+
+
+Route::get('/artisan/{command}', function ($command) {
+    try {
+        $exitCode = Artisan::call($command);
+
+        return response()->json([
+            'status' => true,
+            'message' => "Command '$command' executed successfully",
+            'exit_code' => $exitCode,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => false,
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+});
 });
