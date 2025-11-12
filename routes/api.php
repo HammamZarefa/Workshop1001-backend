@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\OnboardingController;
+use App\Http\Controllers\Api\v1\HomeController;
 use App\Http\Controllers\Api\v1\BannerController;
 Route::prefix('v1')->group(function () {
 
@@ -14,6 +15,7 @@ Route::prefix('v1')->group(function () {
         //onboarding
         Route::get('/onboarding', [OnboardingController::class, 'index']);
         Route::get('/onboarding/{id}', [OnboardingController::class, 'show']);
+        Route::get('/categories', [HomeController::class, 'getCategory']);
 
 Route::prefix('v1')->group(function () {
 // تسجيل الدخول والتسجيل
