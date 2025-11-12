@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\OnboardingController;
+use App\Http\Controllers\Api\v1\BannerController;
 Route::prefix('v1')->group(function () {
 
         // تسجيل الدخول والتسجيل
@@ -14,6 +15,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/onboarding', [OnboardingController::class, 'index']);
         Route::get('/onboarding/{id}', [OnboardingController::class, 'show']);
 
+Route::prefix('v1')->group(function () {
+// تسجيل الدخول والتسجيل
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+  
+    // استعادة كلمة المرور
+//    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+//    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
         // استعادة كلمة المرور (في حال كانت موجودة)
         // Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
         // Route::post('/reset-password', [AuthController::class, 'resetPassword']);
@@ -28,7 +37,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/onboarding', [OnboardingController::class, 'store']);
         Route::post('/onboarding/{id}', [OnboardingController::class, 'update']);
         Route::delete('/onboarding/{id}', [OnboardingController::class, 'destroy']);
-
+  Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);  Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);
         // إدارة المستخدمين
         Route::apiResource('users', UserController::class);
 
