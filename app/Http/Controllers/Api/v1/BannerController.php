@@ -10,10 +10,13 @@ use App\Models\Banner;
 class BannerController extends Controller
 {
    public function getActiveBanners()
-{
-    $banners = Banner::where('is_active', true)
-                     ->orderBy('id', 'asc')
-                     ->get();
+{ $banners = Banner::where('is_active', true)
+        ->orderBy('id', 'asc')
+        ->get()
+        ->map(function ($banner) {
+            $banner->image = $banner->getFirstMediaUrl('banners');
+            return $banner;
+        });
 
     return response()->json([
         'status' => true,
