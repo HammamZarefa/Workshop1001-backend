@@ -7,20 +7,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\OnboardingController;
 use App\Http\Controllers\Api\v1\HomeController;
 use App\Http\Controllers\Api\v1\BannerController;
-Route::prefix('v1')->group(function () {
-
-        // تسجيل الدخول والتسجيل
-        Route::post('/register', [AuthController::class, 'register']);
-        Route::post('/login', [AuthController::class, 'login']);
-        //onboarding
-        Route::get('/onboarding', [OnboardingController::class, 'index']);
-        Route::get('/onboarding/{id}', [OnboardingController::class, 'show']);
-        Route::get('/categories', [HomeController::class, 'getCategory']);
 
 Route::prefix('v1')->group(function () {
 // تسجيل الدخول والتسجيل
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    
   
     // استعادة كلمة المرور
 //    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -39,7 +31,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/onboarding', [OnboardingController::class, 'store']);
         Route::post('/onboarding/{id}', [OnboardingController::class, 'update']);
         Route::delete('/onboarding/{id}', [OnboardingController::class, 'destroy']);
-  Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);  Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);
+        Route::get('/categories', [HomeController::class, 'getCategory']);
+        Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);  Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);
         // إدارة المستخدمين
         Route::apiResource('users', UserController::class);
 

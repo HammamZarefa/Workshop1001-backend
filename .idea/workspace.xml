@@ -5,15 +5,56 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28cd38b5-5f90-4d8e-8492-0f688470486d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootstrap/cache/packages.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootstrap/cache/services.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/database.sqlite" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/app/public/4/onboarding1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/app/public/5/onboarding3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/044cfd2f489eea3a5dcfce7ece510930.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/0596804fc9aed0d4eed7d9b444d5b67c.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/06f60f24da51ec31c113ca58576ddb7c.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/1ca7fb0a99ea191a022a1a6c6dafaec0.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/1ec82aaaca9f6e5750c33c038710920d.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/22921662d646a888c71c11958ed1c504.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/2859bc6306c06f976f0beb76bf7cd90b.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/2a02444e0462d5d5c033f8a53d624213.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/33b5ebf381420a9748fc68a9298d4f16.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/3a6ca11b9eeacd57a7905b6133152080.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/3a7eff81c19f83c0638030dfc573a9f3.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/4f9bab99a64962bce6d37b0538e3b3a9.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/5c737d4e270f266f41a152fdee3e44b8.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/62adad9b9576b164ee5028858f3c2c1a.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/634c2d961f6a6f7ef18a3cf037a0ce08.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/63c0cc8e4e788f90dfb0d1cede726c41.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/689cd523a34c48cb88ef0a482cad4c56.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/6a8cf49f70b0f094bc6b743ec06d7454.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/6c1e4a267d89bb0298dc65a977131822.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/6fb462a5f9397766523f5a781eb8ea96.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/6fdaa428be15627842336e2734d30c67.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/777715676f248526c2a5568e9d319834.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/7ac6648fda26d3715221aa5cffb3b407.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/7fb8743c25a06bb25b96e9b0c0030ead.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/8cd7ecf71463cb11bbd825b616721d68.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/a2cde62d73cdf3486c60d012c2acb076.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/af85e197ea7473e7e6761ae0d51893e9.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/b03587666c44adf65253c6ece1c66117.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/b0fadf75629f79dfe8db1271aad02ec4.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/b46ba76f229dc91f88943a50200577ae.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/b4b98cc35747799f37ea68db07c40008.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/ba18dbe429174551a764167c4115f50a.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/c75e12dd83763e064f1dd10d2b150860.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/caab5215290aef47af1284971d65aaa5.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/d807fa90721c46dadf2f463c00a5cb9c.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/dcf8f1e197f5cf1133443121430d199d.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/e3b52bdaa1f58ab3e4ae260421fde29e.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/eedddca076ac99b6c2d4756c43767b8e.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/f0535ca8b84937283831ac6472d252f1.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/f45e8b643b15efa6e60b30d1a7b22fb5.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/fac376268e9233b0935a47d780298942.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/fb4b34e1e91b293ff2c12068260c2919.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/v1/AuthController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/v1/AuthController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/v1/ProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/v1/ProfileController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Resources/UserResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Resources/UserResource.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/DatabaseSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/UserSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/UserSeeder.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/logs/laravel.log" beforeDir="false" afterPath="$PROJECT_DIR$/storage/logs/laravel.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,7 +213,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/user__model__tamem&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Merging main&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/laravel-projects/Workshop1001-backend&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -219,6 +260,7 @@
       <workItem from="1762605807075" duration="23000" />
       <workItem from="1762605836440" duration="8660000" />
       <workItem from="1762671415718" duration="13340000" />
+      <workItem from="1762957138435" duration="26000" />
     </task>
     <servers />
   </component>

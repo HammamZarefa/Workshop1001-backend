@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserFactory extends Factory
 {
+    protected static ?string $password = null;
     protected $model = User::class;
 
     /**
@@ -36,9 +37,13 @@ class UserFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function (User $user) {
-            $user->addMedia(public_path('images/default_avatar.png'))
-                ->preservingOriginal()
-                ->toMediaCollection('avatars');
+            $avatar = public_path('images/default_avatar.png');
+            if (file_exists($avatar)) {
+                $user->addMedia($avatar)
+                    ->preservingOriginal()
+                    ->toMediaCollection('avatars');
+            }
         });
     }
 }
+
