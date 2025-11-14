@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OnboardingResource;
 use App\Models\Onboarding;
 use Illuminate\Http\Request;
 
-class OnboardingController extends Controller
+class OnboardingController extends ApiController
 {
   
     public function index()
     {
         $onboardings = Onboarding::with('media')->get();
-        return OnboardingResource::collection($onboardings);
+        return $this->resourceResponse(OnboardingResource::collection($onboardings));
     }
 
   
     public function show($id)
     {
         $onboarding = Onboarding::with('media')->findOrFail($id);
-        return new OnboardingResource($onboarding);
+        return $this->resourceResponse(new OnboardingResource($onboarding));
     }
 
   
@@ -45,7 +45,7 @@ class OnboardingController extends Controller
             }
         }
 
-        return new OnboardingResource($onboarding);
+        return $this->resourceResponse(new OnboardingResource($onboarding), 'Created', 201);
     }
 
     
@@ -74,7 +74,7 @@ class OnboardingController extends Controller
         $onboarding->refresh(); 
     }
 
-    return new OnboardingResource($onboarding->fresh());
+    return $this->resourceResponse(new OnboardingResource($onboarding->fresh()));
 
 }
 
@@ -86,7 +86,7 @@ class OnboardingController extends Controller
         $onboarding = Onboarding::findOrFail($id);
         $onboarding->delete();
 
-        return response()->json(['message' => 'Onboarding deleted successfully']);
+        return $this->respondSuccess(null, 'Onboarding deleted successfully');
     }
 
     protected function authorizeAdmin(Request $request)

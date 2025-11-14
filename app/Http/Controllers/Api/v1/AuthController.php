@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
     public function register(RegisterRequest $request)
     {
@@ -30,11 +30,11 @@ class AuthController extends Controller
         $tokenName = $request->device_type ?? 'auth_token';
         $token = $user->createToken($tokenName)->plainTextToken;
 
-        return response()->json([
-            'user' => new UserResource($user),
+        return $this->respondCreated([
+            'user' => (new UserResource($user))->resolve($request),
             'token' => $token,
             'token_type' => $tokenName,
-        ], 201);
+        ], 'Created');
     }
 
     public function login(LoginRequest $request)
@@ -43,16 +43,14 @@ class AuthController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
-            return response()->json([
-                'message' => 'Invalid credentials',
-            ], 401);
+            return $this->respondUnauthorized('Invalid credentials');
         }
 
         $tokenName = $request->device_type ?? 'auth_token';
         $token = $user->createToken($tokenName)->plainTextToken;
 
-        return response()->json([
-            'user' => new UserResource($user),
+        return $this->respondSuccess([
+            'user' => (new UserResource($user))->resolve($request),
             'token' => $token,
             'token_type' => $tokenName,
         ]);
@@ -60,14 +58,13 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        return new UserResource($request->user());
+        return $this->resourceResponse(new UserResource($request->user()));
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-
-        return response()->json(['message' => 'Logged out successfully.']);
+        return $this->respondSuccess(null, 'Logged out successfully.');
     }
 }
 //

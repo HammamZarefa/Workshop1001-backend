@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class ProfileController extends Controller
+class ProfileController extends ApiController
 {
     public function show(Request $request)
     {
-        return new UserResource($request->user());
+        return $this->resourceResponse(new UserResource($request->user()));
     }
 
 
@@ -23,13 +23,13 @@ class ProfileController extends Controller
         $user = $request->user();
         $user->update($data);
 
-        return new UserResource($user);
+        return $this->resourceResponse(new UserResource($user));
     }
 
     public function destroy(Request $request)
     {
         $request->user()->delete();
 
-        return response()->json(['message' => 'User deleted']);
+        return $this->respondSuccess(null, 'User deleted');
     }
 }
