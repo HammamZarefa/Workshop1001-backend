@@ -18,6 +18,9 @@ class ProductRequest extends FormRequest
             'is_featured' => 'nullable|boolean',
             'min_price'   => 'nullable|numeric|min:0',
             'max_price'   => 'nullable|numeric|min:0',
+            'featured' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'gallery' => 'nullable',
+            'gallery.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ];
     }
 }

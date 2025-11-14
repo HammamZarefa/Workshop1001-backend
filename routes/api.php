@@ -34,9 +34,9 @@ Route::prefix('v1')->group(function () {
         //Category
         Route::get('/categories', [HomeController::class, 'getCategory']);
         // Product
-        Route::get('/products', [HomeController::class, 'index']);
-        Route::get('/products/{id}', [HomeController::class, 'show']);
-        Route::get('/products-filter', [HomeController::class, 'filter']);
+        Route::get('/products', [HomeController::class, 'getProducts']);
+        Route::get('/products/{id}', [HomeController::class, 'getProductById']);
+        Route::get('/products-filter', [HomeController::class, 'filterProducts']);
 
         //Banners
         Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']); 

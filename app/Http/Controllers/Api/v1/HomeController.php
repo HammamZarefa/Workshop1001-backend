@@ -11,57 +11,51 @@ use App\Http\Resources\ProductResource;
 
 class HomeController extends Controller
 {
-    
+
     public function getCategory()
     {
-        $categories = Category::where('is_active', true)->get();
+        $categories = Category::all();
 
         return response()->json([
             'data' => $categories
         ]);
     }
 
-  
-    public function index()
+    public function getProducts()
     {
-        $products = Product::with('category')
-            ->where('is_active', true)
-            ->get();
+        $products = Product::with('category')->get();
 
         return ProductResource::collection($products);
     }
 
-  
-    public function show($id)
+    public function getProductById($id)
     {
+ 
         $product = Product::with('category')->findOrFail($id);
 
         return new ProductResource($product);
     }
 
-   
-    public function filter(ProductRequest $request)
-    {
-        $query = Product::query()->with('category');
-
-        if ($request->filled('category_id')) {
+ public function filterProducts(ProductRequest $request)
+{
+    $products = Product::with('category')
+        ->when($request->filled('category_id'), function ($query) use ($request) {
             $query->where('category_id', $request->category_id);
-        }
-
-        if ($request->filled('is_featured')) {
+        })
+        ->when($request->filled('is_featured'), function ($query) use ($request) {
             $query->where('is_featured', $request->is_featured);
-        }
-
-        if ($request->filled('min_price')) {
+        })
+        ->when($request->filled('min_price'), function ($query) use ($request) {
             $query->where('price', '>=', $request->min_price);
-        }
-
-        if ($request->filled('max_price')) {
+        })
+        ->when($request->filled('max_price'), function ($query) use ($request) {
             $query->where('price', '<=', $request->max_price);
-        }
+        })
+        ->get();
 
-        $products = $query->where('is_active', true)->get();
+    return ProductResource::collection($products);
+}
 
-        return ProductResource::collection($products);
-    }
+
+
 }

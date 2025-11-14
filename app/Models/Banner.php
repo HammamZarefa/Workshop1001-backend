@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use App\Scopes\IsActiveScope;
 
 class Banner extends Model implements HasMedia
 {
@@ -45,5 +46,9 @@ class Banner extends Model implements HasMedia
     public function getImageUrlAttribute(): ?string
     {
         return $this->getFirstMediaUrl('banners') ?: null;
+    }
+        protected static function booted()
+    {
+        static::addGlobalScope(new IsActiveScope);
     }
 }

@@ -10,9 +10,9 @@ class BannerController extends Controller
 {
     public function getActiveBanners()
     {
-        $banners = Banner::where('is_active', true)
-            ->orderBy('id', 'asc')
-            ->get();
+       
+        $banners = Banner::orderBy('id', 'asc')->get();
+
         return BannerResource::collection($banners);
     }
 }
