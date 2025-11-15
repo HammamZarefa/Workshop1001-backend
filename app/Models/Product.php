@@ -33,7 +33,7 @@ class Product extends Model implements HasMedia
     {
         return $this->belongsTo(Category::class);
     }
-   
+    
        protected static function booted()
     {
         static::addGlobalScope(new IsActiveScope);

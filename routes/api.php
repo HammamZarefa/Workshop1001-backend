@@ -12,7 +12,8 @@ Route::prefix('v1')->group(function () {
 // تسجيل الدخول والتسجيل
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-    
+    Route::get('/onboarding', [OnboardingController::class, 'index']);
+    Route::get('/onboarding/{id}', [OnboardingController::class, 'show']);
   
        // استعادة كلمة المرور
       //    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);

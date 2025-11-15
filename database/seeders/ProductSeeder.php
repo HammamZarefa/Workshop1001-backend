@@ -32,7 +32,7 @@ class ProductSeeder extends Seeder
                 'price' => 220,
                 'currency' => 'SAR',
                 'stock' => 15,
-                'is_active' => 1,
+                'is_active' => 0,
                 'is_featured' => 0,
                 'colors' => ['red', 'blue'],
                 'featured' => public_path('images/featured2.jpg'),
