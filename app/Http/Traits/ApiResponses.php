@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Http\Traits;
 
 use Illuminate\Http\JsonResponse;
 
@@ -14,13 +14,14 @@ trait ApiResponses
     protected function success($message, $data = [], $statusCode = 200): JsonResponse
     {
         return response()->json([
-            'data' => $data,
+            'status' => $statusCode,
             'message' => $message,
-            'status' => $statusCode
+            'data' => $data
+            
         ], $statusCode);
     }
 
-    protected function error($errors = [], $statusCode = null): JsonResponse
+    protected function error($errors = [], $statusCode = 400): JsonResponse
     {
         if (is_string($errors)) {
             return response()->json([
@@ -30,8 +31,9 @@ trait ApiResponses
         }
 
         return response()->json([
-            'errors' => $errors
-        ]);
+            'errors' => $errors,
+            'status' => $statusCode
+        ], $statusCode);
     }
 
     protected function notAuthorized($message): JsonResponse
