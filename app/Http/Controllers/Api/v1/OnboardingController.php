@@ -4,26 +4,28 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OnboardingResource;
+use App\Http\Traits\ApiResponses;
 use App\Models\Onboarding;
 use Illuminate\Http\Request;
 
 class OnboardingController extends Controller
 {
-  
+  use ApiResponses;
     public function index()
     {
         $onboardings = Onboarding::with('media')->get();
-        return OnboardingResource::collection($onboardings);
+        return $this->ok('Onboardings retrieved successfully', OnboardingResource::collection($onboardings));
+
     }
 
-  
+
     public function show($id)
     {
         $onboarding = Onboarding::with('media')->findOrFail($id);
         return new OnboardingResource($onboarding);
     }
 
-  
+
     public function store(Request $request)
     {
         $this->authorizeAdmin($request);
@@ -48,7 +50,7 @@ class OnboardingController extends Controller
         return new OnboardingResource($onboarding);
     }
 
-    
+
    public function update(Request $request, $id)
 {
     $this->authorizeAdmin($request);
@@ -64,21 +66,21 @@ class OnboardingController extends Controller
     ]);
 
     $onboarding->update($data);
-    $onboarding->refresh(); 
+    $onboarding->refresh();
 
     if ($request->hasFile('images')) {
         $onboarding->clearMediaCollection('images');
         foreach ($request->file('images') as $file) {
             $onboarding->addMedia($file)->toMediaCollection('images');
         }
-        $onboarding->refresh(); 
+        $onboarding->refresh();
     }
 
     return new OnboardingResource($onboarding->fresh());
 
 }
 
-    
+
     public function destroy(Request $request, $id)
     {
         $this->authorizeAdmin($request);
