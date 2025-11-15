@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28cd38b5-5f90-4d8e-8492-0f688470486d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ApiResponses.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Traits/ApiResponses.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/v1/OnboardingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/v1/OnboardingController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,7 +228,7 @@
       <workItem from="1762605807075" duration="23000" />
       <workItem from="1762605836440" duration="8660000" />
       <workItem from="1762671415718" duration="13340000" />
-      <workItem from="1763203755292" duration="412000" />
+      <workItem from="1763203755292" duration="2465000" />
     </task>
     <servers />
   </component>
