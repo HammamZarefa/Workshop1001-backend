@@ -17,12 +17,12 @@ class CategorySeeder extends Seeder
             ],
             [
                 'title' => 'أحذية',
-                'is_active' => true,
+                'is_active' => false,
                 'image' => public_path('images/category2.png'),
             ],
             [
                 'title' => 'إلكترونيات',
-                'is_active' => true,
+                'is_active' => false,
                 'image' => public_path('images/category3.png'),
             ],
         

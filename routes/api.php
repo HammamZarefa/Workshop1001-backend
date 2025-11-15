@@ -13,11 +13,12 @@ Route::prefix('v1')->group(function () {
 // تسجيل الدخول والتسجيل
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-
-
-    // استعادة كلمة المرور
-//    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-//    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+    Route::get('/onboarding', [OnboardingController::class, 'index']);
+    Route::get('/onboarding/{id}', [OnboardingController::class, 'show']);
+  
+       // استعادة كلمة المرور
+      //    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+       //    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
         // استعادة كلمة المرور (في حال كانت موجودة)
         // Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
         // Route::post('/reset-password', [AuthController::class, 'resetPassword']);
@@ -32,8 +33,16 @@ Route::prefix('v1')->group(function () {
         Route::post('/onboarding', [OnboardingController::class, 'store']);
         Route::post('/onboarding/{id}', [OnboardingController::class, 'update']);
         Route::delete('/onboarding/{id}', [OnboardingController::class, 'destroy']);
+        //Category
         Route::get('/categories', [HomeController::class, 'getCategory']);
-        Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);  Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);
+        // Product
+        Route::get('/products', [HomeController::class, 'getProducts']);
+        Route::get('/products/{id}', [HomeController::class, 'getProductById']);
+        Route::get('/products-filter', [HomeController::class, 'filterProducts']);
+
+        //Banners
+        Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']); 
+         
         // إدارة المستخدمين
         Route::apiResource('users', UserController::class);
 
