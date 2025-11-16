@@ -21,7 +21,8 @@ Thumbs.db
 /node_modules
 /public/build
 /public/hot
-
+./storage
+.idea
 # Laravel specific
 /vendor
 /public/storage
