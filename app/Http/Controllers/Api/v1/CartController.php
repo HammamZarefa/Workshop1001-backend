@@ -73,9 +73,7 @@ class CartController extends ApiController
             }
 
 
-            $cart->update([
-                'total' => $cart->items()->sum(DB::raw('price * quantity'))
-            ]);
+            
 
 
             return $cart->load('items.product');
