@@ -57,5 +57,11 @@ class Product extends Model implements HasMedia
             set: fn ($value) => (int) round($value * 100)
         );
     }
+        //local scope
+        public function scopeAvailable($query)
+    {
+        return $query->where('stock', '>', 0);
+    }
+
 
 }
