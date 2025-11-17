@@ -23,7 +23,7 @@ class HomeController extends Controller
 
     public function getProducts()
     {
-        $products = Product::with('category')->get();
+        $products = Product::with('category')->available()->get();
 
         return ProductResource::collection($products);
     }
@@ -31,7 +31,7 @@ class HomeController extends Controller
     public function getProductById($id)
     {
  
-        $product = Product::with('category')->findOrFail($id);
+        $product = Product::with('category')->available()->findOrFail($id);
 
         return new ProductResource($product);
     }
@@ -39,6 +39,7 @@ class HomeController extends Controller
  public function filterProducts(ProductRequest $request)
 {
     $products = Product::with('category')
+        ->available()
         ->when($request->filled('category_id'), function ($query) use ($request) {
             $query->where('category_id', $request->category_id);
         })
