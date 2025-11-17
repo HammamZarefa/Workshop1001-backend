@@ -10,6 +10,7 @@ Thumbs.db
 /.phpunit.cache
 .phpunit.result.cache
 .phpactor.json
+.idea/workspace.xml
 
 # Environment files
 .env
