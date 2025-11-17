@@ -3,6 +3,7 @@
 .DS_Store
 Thumbs.db
 /.idea
+/.idea/workspace.xml
 /.vscode
 /.fleet
 /.nova
@@ -12,6 +13,7 @@ Thumbs.db
 .phpactor.json
 .idea/workspace.xml
 
+/storage
 # Environment files
 .env
 .env.backup

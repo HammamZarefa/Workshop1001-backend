@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Scopes\IsActiveScope;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 class Product extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
@@ -47,5 +49,13 @@ class Product extends Model implements HasMedia
     $this
         ->addMediaCollection('gallery'); 
 }
+    protected function price(): Attribute
+    {
+        return Attribute::make(
+            
+            get: fn ($value) => $value / 100,
+            set: fn ($value) => (int) round($value * 100)
+        );
+    }
 
 }
