@@ -24,6 +24,28 @@ class OrderApiTest extends TestCase
         $this->product = Product::factory()->create();
     }
 
+//    public function test_cannot_create_order_with_wrong_item_price()
+//    {
+//        $this->actingAs($this->user, 'sanctum');
+//
+//        $payload = [
+//            'shipping_address' => 'Amman, Jordan',
+//            'currency' => 'USD',
+//            'items' => [
+//                [
+//                    'product_id' => $this->product->id,
+//                    'price' => $this->product->price + 1, // wrong price
+//                    'quantity' => 1,
+//                    'note' => null,
+//                ]
+//            ]
+//        ];
+//
+//        $response = $this->postJson('/api/v1/orders', $payload);
+//
+//        $response->assertStatus(422);
+//    }
+
     public function test_can_create_order()
     {
         $this->actingAs($this->user, 'sanctum');
@@ -34,7 +56,7 @@ class OrderApiTest extends TestCase
             'items' => [
                 [
                     'product_id' => $this->product->id,
-                    'price' => 100,
+                    'price' => $this->product->price,
                     'quantity' => 2,
                     'note' => null,
                 ]

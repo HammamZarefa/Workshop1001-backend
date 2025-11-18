@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\OrderController;
+use App\Http\Controllers\Api\v1\CartController;
 use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\UserController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,11 @@ Route::prefix('v1')->group(function () {
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
+
+        // Carts
+        Route::get('carts', [CartController::class, 'index'])->name('carts.index');
+        Route::get('carts/{cart}', [CartController::class, 'show'])->name('carts.show');
+        Route::post('carts', [CartController::class, 'store'])->name('carts.store');
     });
 
 
