@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Models\User;
 class UserController extends Controller
 {
     /**
@@ -28,7 +28,12 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $user
+    ]);
     }
 
     /**

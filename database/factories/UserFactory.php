@@ -23,7 +23,7 @@ class UserFactory extends Factory
             'phone' => fake()->unique()->phoneNumber(),
             'address' => fake()->address(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => Hash::make('password'),
             'is_active' => true, 
             'is_admin' => false,
             'remember_token' => Str::random(10),
