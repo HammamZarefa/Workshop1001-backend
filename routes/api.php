@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\v1\OrderController;
 use App\Http\Controllers\Api\v1\CartController;
 use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\UserController;
+use App\Http\Controllers\Api\v1\PaymentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Api\v1\OnboardingController;
@@ -17,6 +18,8 @@ Route::prefix('v1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/onboarding', [OnboardingController::class, 'index']);
     Route::get('/onboarding/{id}', [OnboardingController::class, 'show']);
+
+
 
     // استعادة كلمة المرور
     //    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -41,6 +44,17 @@ Route::prefix('v1')->group(function () {
         Route::get('/products', [HomeController::class, 'getProducts']);
         Route::get('/products/{id}', [HomeController::class, 'getProductById']);
         Route::get('/products-filter', [HomeController::class, 'filterProducts']);
+
+
+        //Payments
+        Route::get('/payment', [PaymentController::class, 'index']);
+        Route::post('/payment', [PaymentController::class, 'store']);
+        Route::get('/payment/{id}', [PaymentController::class, 'show']);
+        Route::put('/payment/{id}', [PaymentController::class, 'update']);
+        Route::delete('/payment/{id}', [PaymentController::class, 'destroy']);
+
+
+
 
         //Banners
         Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);
