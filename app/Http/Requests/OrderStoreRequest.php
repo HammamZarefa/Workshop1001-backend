@@ -15,7 +15,7 @@ class OrderStoreRequest extends FormRequest
     {
         return [
             'shipping_address' => 'required|string',
-            'coupon_value' => 'nullable|numeric',
+            'coupon_code' => 'nullable|string|exists:coupons,code',
             'tax_amount' => 'nullable|numeric',
             'discount_percentage' => 'nullable|numeric',
             'currency' => 'required|string|size:3',
