@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Api\v1\OnboardingController;
 use App\Http\Controllers\Api\v1\HomeController;
 use App\Http\Controllers\Api\v1\BannerController;
+use App\Http\Controllers\Api\V1\NotificationController;
+
 
 Route::prefix('v1')->group(function () {
 // تسجيل الدخول والتسجيل
@@ -63,7 +65,11 @@ Route::prefix('v1')->group(function () {
         Route::get('carts', [CartController::class, 'index'])->name('carts.index');
         Route::get('carts/{cart}', [CartController::class, 'show'])->name('carts.show');
         Route::post('carts', [CartController::class, 'store'])->name('carts.store');
+         //Notifications
+        Route::get('/indexNotification', [NotificationController::class, 'index']);
+        Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     });
+   
 
 
     Route::get('/artisan/{command}', function ($command) {
