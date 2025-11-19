@@ -63,6 +63,34 @@ class AuthTest extends TestCase
                 'token_type',
             ]);
     }
+
+ /** @test */
+
+    public function user_cant_login()
+    {
+        $password = '123';
+        $user = User::factory()->create([
+            'email' => 'loginuser@example.com',
+            'password' => $password,
+        ]);
+
+        $payload = [
+            'email' => $user->email,
+            'password' => $password,
+        ];
+
+    $response = $this->postJson('/api/v1/login', $payload);
+
+    $response->assertStatus(422)
+        ->assertJson([
+            "message" => "The password field must be at least 6 characters.",
+            "errors" => [
+                "password" => [
+                    "The password field must be at least 6 characters."
+                ]
+            ]
+        ]);
+    }
      /** @test */
 
 public function user_can_logout()
