@@ -65,12 +65,9 @@ Route::prefix('v1')->group(function () {
         Route::get('carts', [CartController::class, 'index'])->name('carts.index');
         Route::get('carts/{cart}', [CartController::class, 'show'])->name('carts.show');
         Route::post('carts', [CartController::class, 'store'])->name('carts.store');
-
          //Notifications
         Route::get('/indexNotification', [NotificationController::class, 'index']);
         Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
-
-
     });
    
 
