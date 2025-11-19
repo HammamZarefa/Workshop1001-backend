@@ -50,8 +50,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/payment', [PaymentController::class, 'index']);
         Route::post('/payment', [PaymentController::class, 'store']);
         Route::get('/payment/{id}', [PaymentController::class, 'show']);
-        Route::put('/payment/{id}', [PaymentController::class, 'update']);
-        Route::delete('/payment/{id}', [PaymentController::class, 'destroy']);
+
 
 
 

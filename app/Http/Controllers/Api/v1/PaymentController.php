@@ -66,52 +66,5 @@ public function index(Request $request)
 }
 
 
-  //   تحديث عملية دفع
-public function update(Request $request, $id)
-{
-    $payment = Payment::where('id', $id)
-        ->whereHas('order', function ($query) {
-            $query->where('user_id', auth()->id());
-        })
-        ->first();
 
-    if (!$payment) {
-        return $this->error('Payment not found or you do not have access', 404);
-    }
-
-    $validated = $request->validate([
-        'provider'  => 'nullable|string|max:255',
-        'method'    => 'nullable|string|max:255',
-        'status'    => 'nullable|in:pending,paid,failed,canceled',
-        'reference' => 'nullable|string|max:255',
-        'amount'    => 'nullable|numeric|min:0',
-        'currency'  => 'nullable|string|size:3',
-        'paid_at'   => 'nullable|date',
-        'meta'      => 'nullable|array',
-    ]);
-
-    $payment->update($validated);
-
-    return $this->success('Payment updated successfully', new PaymentResource($payment));
-}
-
-
-   //   حذف عملية دفع
-
-  public function destroy($id)
-{
-    $payment = Payment::where('id', $id)
-        ->whereHas('order', function ($query) {
-            $query->where('user_id', auth()->id());
-        })
-        ->first();
-
-    if (!$payment) {
-        return $this->error('Payment not found or you do not have access', 404);
-    }
-
-    $payment->delete();
-
-    return $this->success('Payment deleted successfully');
-}
 }
