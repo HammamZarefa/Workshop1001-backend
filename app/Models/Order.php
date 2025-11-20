@@ -39,33 +39,4 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
-
-
-
-    // إجمالي السعر قبل الضرائب والخصومات
-    public function subtotal()
-    {
-        return $this->items->sum(fn ($item) => $item->price * $item->quantity);
-    }
-
-    // إجمالي الضريبة
-    public function taxTotal()
-    {
-        return $this->subtotal() * ($this->tax_amount / 100);
-    }
-
-    // قيمة الخصم
-    public function discountTotal()
-    {
-        return $this->subtotal() * ($this->discount_percentage / 100);
-    }
-
-    // إجمالي نهائي محسوب
-    public function calculatedTotal()
-    {
-        return $this->subtotal()
-            + $this->taxTotal()
-            - $this->discountTotal()
-            - $this->coupon_value;
-    }
 }
