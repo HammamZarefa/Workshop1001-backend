@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Models\Rating;
 
 class HomeController extends Controller
 {
@@ -31,9 +32,14 @@ class HomeController extends Controller
     public function getProductById($id)
     {
  
-        $product = Product::with('category')->available()->findOrFail($id);
+        $product = Product::with('category','ratings')->available()->findOrFail($id);
 
-        return new ProductResource($product);
+        return response()->json([
+            'product' => new ProductResource($product),
+            'average_rating' => round($product->averageRating(), 1),
+            'ratings' => $product->ratings
+]);
+
     }
 
  public function filterProducts(ProductRequest $request)
@@ -56,6 +62,28 @@ class HomeController extends Controller
 
     return ProductResource::collection($products);
 }
+//add rating
+public function addProductRating(Request $request)
+{
+    $request->validate([
+        'product_id' => 'required|exists:products,id',
+        'rating' => 'required|integer|min:1|max:5',
+        'comment' => 'nullable|string',
+    ]);
+
+    $rating = Rating::create([
+        'product_id' => $request->product_id,
+        'user_id' => $request->user()->id,
+        'rating' => $request->rating,
+        'comment' => $request->comment,
+    ]);
+
+    return response()->json([
+        'message' => 'Rating added successfully',
+        'data' => $rating
+    ]);
+}
+
 
 
 
