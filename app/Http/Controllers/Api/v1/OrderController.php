@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\OrderStoreRequest;
 use App\Http\Resources\OrderResource;
+use App\Models\Coupon;
 use App\Models\Order;
+use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -42,7 +44,7 @@ class OrderController extends ApiController
         return $this->ok('Order fetched', new OrderResource($order));
     }
 
-    public function store(OrderStoreRequest $request)
+    public function store(OrderStoreRequest $request, PricingService $pricingService)
     {
         $data = $request->validated();
         foreach ($data['items'] as $item) {
@@ -52,13 +54,34 @@ class OrderController extends ApiController
             }
         }
 
+        $subtotal = collect($data['items'])->sum(fn ($item) => $item['price'] * $item['quantity']);
 
-        $order = DB::transaction(function () use ($data) {
+        $couponId = null;
+        $couponValue = 0;
+
+        if (!empty($data['coupon_code'])) {
+            $coupon = Coupon::where('code', $data['coupon_code'])->first();
+
+            if (! $coupon) {
+                return $this->error('Invalid coupon code', [], 422);
+            }
+
+            if (! $coupon->isValid($subtotal, auth()->user())) {
+                return $this->error('Coupon is not valid for this order', [], 422);
+            }
+
+            $couponId = $coupon->id;
+            $couponValue = $coupon->calculateDiscount($subtotal);
+        }
+
+
+        $order = DB::transaction(function () use ($data, $couponId, $couponValue, $pricingService) {
 
             $order = Order::create([
                 'user_id' => auth()->id(),
                 'shipping_address' => $data['shipping_address'],
-                'coupon_value' => $data['coupon_value'] ?? 0,
+                'coupon_id' => $couponId,
+                'coupon_value' => $couponValue,
                 'tax_amount' => $data['tax_amount'] ?? 0,
                 'discount_percentage' => $data['discount_percentage'] ?? 0,
                 'currency' => $data['currency'],
@@ -68,11 +91,13 @@ class OrderController extends ApiController
 
             $order->items()->createMany($data['items']);
 
+            $order->load('items.product');
+
             $order->update([
-                'total' => $order->calculatedTotal()
+                'total' => $pricingService->orderTotal($order),
             ]);
 
-            return $order->load('items.product');
+            return $order;
         });
 
         return $this->success('Order created successfully', new OrderResource($order), 201);

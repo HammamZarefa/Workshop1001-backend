@@ -24,9 +24,4 @@ class Cart extends Model
     {
         return $this->hasMany(CartItem::class);
     }
-
-    public function subtotal()
-    {
-        return $this->items->sum(fn ($item) => $item->price * $item->quantity);
-    }
 }
