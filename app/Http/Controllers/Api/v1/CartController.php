@@ -6,21 +6,43 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\CartStoreRequest;
 use App\Http\Resources\CartResource;
 use App\Models\Cart;
+use App\Models\Coupon;
 use App\Models\Product;
+use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CartController extends ApiController
 {
-    public function index(Request $request)
+    public function index(Request $request, PricingService $pricingService)
     {
         $cart = Cart::with('items.product')
             ->firstOrCreate(['user_id' => auth()->id()]);
 
-        return $this->ok('Cart fetched', new CartResource($cart->load('items.product')));
+        $cart->load('items.product');
+        $coupon = null;
+        if ($code = $request->input('coupon_code')) {
+            $coupon = Coupon::where('code', $code)->first();
+
+            if (! $coupon) {
+                return $this->error('Invalid coupon code', [], 422);
+            }
+
+            $subtotal = $pricingService->cartSubtotal($cart);
+            if (! $coupon->isValid($subtotal, auth()->user())) {
+                return $this->error('Coupon is not valid for this cart', [], 422);
+            }
+        }
+
+        $totals = $pricingService->cartTotalsWithTax($cart, $coupon);
+
+        $resource = (new CartResource($cart))
+            ->additional(['meta' => ['pricing' => $totals]]);
+
+        return $this->ok('Cart fetched', $resource);
     }
 
-    public function show($id)
+    public function show($id, PricingService $pricingService, Request $request)
     {
         $cart = Cart::with('items.product')->find($id);
         if (! $cart) {
@@ -30,7 +52,28 @@ class CartController extends ApiController
             return $this->error('Unauthorized', [], 403);
         }
 
-        return $this->ok('Cart fetched', new CartResource($cart));
+        $cart->load('items.product');
+
+        $coupon = null;
+        if ($code = $request->input('coupon_code')) {
+            $coupon = Coupon::where('code', $code)->first();
+
+            if (! $coupon) {
+                return $this->error('Invalid coupon code', [], 422);
+            }
+
+            $subtotal = $pricingService->cartSubtotal($cart);
+            if (! $coupon->isValid($subtotal, auth()->user())) {
+                return $this->error('Coupon is not valid for this cart', [], 422);
+            }
+        }
+
+        $totals = $pricingService->cartTotalsWithTax($cart, $coupon);
+
+        $resource = (new CartResource($cart))
+            ->additional(['meta' => ['pricing' => $totals]]);
+
+        return $this->ok('Cart fetched', $resource);
     }
 
     public function store(CartStoreRequest $request)

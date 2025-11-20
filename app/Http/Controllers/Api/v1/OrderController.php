@@ -7,6 +7,7 @@ use App\Http\Requests\OrderStoreRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -43,7 +44,7 @@ class OrderController extends ApiController
         return $this->ok('Order fetched', new OrderResource($order));
     }
 
-    public function store(OrderStoreRequest $request)
+    public function store(OrderStoreRequest $request, PricingService $pricingService)
     {
         $data = $request->validated();
         foreach ($data['items'] as $item) {
@@ -74,7 +75,7 @@ class OrderController extends ApiController
         }
 
 
-        $order = DB::transaction(function () use ($data, $couponId, $couponValue) {
+        $order = DB::transaction(function () use ($data, $couponId, $couponValue, $pricingService) {
 
             $order = Order::create([
                 'user_id' => auth()->id(),
@@ -90,11 +91,13 @@ class OrderController extends ApiController
 
             $order->items()->createMany($data['items']);
 
+            $order->load('items.product');
+
             $order->update([
-                'total' => $order->calculatedTotal()
+                'total' => $pricingService->orderTotal($order),
             ]);
 
-            return $order->load('items.product');
+            return $order;
         });
 
         return $this->success('Order created successfully', new OrderResource($order), 201);
