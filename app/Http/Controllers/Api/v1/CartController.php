@@ -14,66 +14,25 @@ use Illuminate\Support\Facades\DB;
 
 class CartController extends ApiController
 {
-    public function index(Request $request, PricingService $pricingService)
+    public function activeCart(Request $request, PricingService $pricingService)
     {
-        $cart = Cart::with('items.product')
-            ->firstOrCreate(['user_id' => auth()->id()]);
+        $cart = $this->getUserCart();
 
-        $cart->load('items.product');
-        $coupon = null;
-        if ($code = $request->input('coupon_code')) {
-            $coupon = Coupon::where('code', $code)->first();
+        $coupon = $this->resolveCoupon($request, $pricingService, $cart);
 
-            if (! $coupon) {
-                return $this->error('Invalid coupon code', [], 422);
-            }
-
-            $subtotal = $pricingService->cartSubtotal($cart);
-            if (! $coupon->isValid($subtotal, auth()->user())) {
-                return $this->error('Coupon is not valid for this cart', [], 422);
-            }
-        }
-
-        $totals = $pricingService->cartTotalsWithTax($cart, $coupon);
-
-        $resource = (new CartResource($cart))
-            ->additional(['meta' => ['pricing' => $totals]]);
-
-        return $this->ok('Cart fetched', $resource);
+        return $this->cartResponse($cart, $coupon, $pricingService);
     }
 
     public function show($id, PricingService $pricingService, Request $request)
     {
         $cart = Cart::with('items.product')->find($id);
-        if (! $cart) {
-            return $this->error('Cart not found', [], 404);
-        }
-        if ($cart->user_id !== auth()->id()) {
-            return $this->error('Unauthorized', [], 403);
-        }
 
-        $cart->load('items.product');
+        abort_unless($cart, 404, 'Cart not found');
+        abort_unless($cart->user_id === auth()->id(), 403, 'Unauthorized');
 
-        $coupon = null;
-        if ($code = $request->input('coupon_code')) {
-            $coupon = Coupon::where('code', $code)->first();
+        $coupon = $this->resolveCoupon($request, $pricingService, $cart);
 
-            if (! $coupon) {
-                return $this->error('Invalid coupon code', [], 422);
-            }
-
-            $subtotal = $pricingService->cartSubtotal($cart);
-            if (! $coupon->isValid($subtotal, auth()->user())) {
-                return $this->error('Coupon is not valid for this cart', [], 422);
-            }
-        }
-
-        $totals = $pricingService->cartTotalsWithTax($cart, $coupon);
-
-        $resource = (new CartResource($cart))
-            ->additional(['meta' => ['pricing' => $totals]]);
-
-        return $this->ok('Cart fetched', $resource);
+        return $this->cartResponse($cart, $coupon, $pricingService);
     }
 
     public function store(CartStoreRequest $request)
@@ -82,14 +41,12 @@ class CartController extends ApiController
 
         $cart = DB::transaction(function () use ($data) {
 
-            $cart = Cart::firstOrCreate(
-                ['user_id' => auth()->id()]
-            );
+            $cart = Cart::firstOrCreate(['user_id' => auth()->id()]);
 
             foreach ($data['items'] as $item) {
-
                 $product = Product::find($item['product_id']);
-                if (!$product) {
+
+                if (! $product) {
                     throw new \Exception("Product with ID {$item['product_id']} not found");
                 }
 
@@ -97,31 +54,63 @@ class CartController extends ApiController
                     throw new \Exception("Invalid price for product ID {$item['product_id']}");
                 }
 
-
-                $existing = $cart->items()->where('product_id', $product->id)->first();
-                if ($existing) {
-
-                    $existing->update([
-                        'quantity' => $existing->quantity + $item['quantity'],
-                        'price' => $product->price,
-                    ]);
-                } else {
-
-                    $cart->items()->create([
-                        'product_id' => $product->id,
-                        'quantity' => $item['quantity'],
-                        'price' => $product->price,
-                    ]);
-                }
+                $cart->items()->updateOrCreate(
+                    ['product_id' => $product->id],
+                    [
+                        'quantity' => DB::raw("quantity + {$item['quantity']}"),
+                        'price'    => $product->price
+                    ]
+                );
             }
-
-
-            
-
 
             return $cart->load('items.product');
         });
 
         return $this->success('Cart updated successfully', new CartResource($cart), 201);
+    }
+
+    // -----------------------------------------------------
+    // Helpers
+    // -----------------------------------------------------
+
+    private function getUserCart()
+    {
+        $cart = Cart::with('items.product')
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->first();
+
+        abort_unless($cart, 404, 'Cart not found');
+
+        return $cart;
+    }
+
+    private function resolveCoupon(Request $request, PricingService $pricingService, Cart $cart) : ?Coupon
+    {
+        if (! $code = $request->get('coupon_code')) {
+            return null;
+        }
+
+        $coupon = Coupon::where('code', $code)->first();
+
+        if (! $coupon) {
+            abort(422, 'Invalid coupon code');
+        }
+
+        if (! $coupon->isValid($pricingService->cartSubtotal($cart), auth()->user())) {
+            abort(422, 'Coupon is not valid for this cart');
+        }
+
+        return $coupon;
+    }
+
+    private function cartResponse(Cart $cart, $coupon, PricingService $pricingService)
+    {
+        $totals = $pricingService->cartTotalsWithTax($cart, $coupon);
+
+        $resource = (new CartResource($cart))
+            ->additional(['meta' => ['pricing' => $totals]]);
+
+        return $this->ok('Cart fetched', $resource);
     }
 }

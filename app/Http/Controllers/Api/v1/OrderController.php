@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends ApiController
 {
-    public function index(Request $request)
+    public function myOrders(Request $request)
     {
         $perPage = $this->perPage($request);
 
