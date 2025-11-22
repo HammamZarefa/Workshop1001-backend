@@ -11,17 +11,17 @@
 
     <!-- Tailwind -->
 
-{{--    <style>--}}
-{{--        @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');--}}
-{{--        .font-family-karla { font-family: karla; }--}}
-{{--        .bg-sidebar { background: #3d68ff; }--}}
-{{--        .cta-btn { color: #3d68ff; }--}}
-{{--        .upgrade-btn { background: #1947ee; }--}}
-{{--        .upgrade-btn:hover { background: #0038fd; }--}}
-{{--        .active-nav-link { background: #1947ee; }--}}
-{{--        .nav-item:hover { background: #1947ee; }--}}
-{{--        .account-link:hover { background: #3d68ff; }--}}
-{{--    </style>--}}
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
+        .font-family-karla { font-family: karla; }
+        .bg-sidebar { background: #3d68ff; }
+        .cta-btn { color: #3d68ff; }
+        .upgrade-btn { background: #1947ee; }
+        .upgrade-btn:hover { background: #0038fd; }
+        .active-nav-link { background: #1947ee; }
+        .nav-item:hover { background: #1947ee; }
+        .account-link:hover { background: #3d68ff; }
+    </style>
 
     @stack('styles')
 </head>
@@ -38,16 +38,14 @@
             <main class="w-full flex-grow p-6">
                 @yield('content')
             </main>
-
-            @include('components.footer')
         </div>
     </div>
 
-{{--    <!-- AlpineJS -->--}}
-{{--    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>--}}
-{{--    <!-- Font Awesome -->--}}
-{{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>--}}
-{{--    <!-- ChartJS -->--}}
+    <!-- AlpineJS -->
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
+    <!-- ChartJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 
     @stack('scripts')
