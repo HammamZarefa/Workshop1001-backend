@@ -81,6 +81,9 @@ Route::prefix('v1')->group(function () {
          //Notifications
         Route::get('/indexNotification', [NotificationController::class, 'index']);
         Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+        //add rating
+        Route::post('/ratings', [HomeController::class, 'addProductRating']);
+
     });
    
 

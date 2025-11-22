@@ -36,6 +36,8 @@ class ProductResource extends JsonResource
                     'url' => $media->getUrl(),
                 ];
             }),
+            'average_rating' => round($this->ratings()->avg('rating'), 1),
+
 
         ];
     }
