@@ -6,8 +6,10 @@
 
     <title>@yield('title', 'Dashboard')</title>
 
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
+
     <!-- Tailwind -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 
     <style>
         @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
@@ -36,8 +38,6 @@
             <main class="w-full flex-grow p-6">
                 @yield('content')
             </main>
-
-            @include('components.footer')
         </div>
     </div>
 
@@ -52,3 +52,4 @@
 
 </body>
 </html>
+
