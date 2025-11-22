@@ -7,15 +7,15 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('carts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->timestamps();
+        Schema::table('carts', function (Blueprint $table) {
+            $table->enum('status', ['pending', 'completed'])->default('pending')->after('user_id');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('carts');
+        Schema::table('carts', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 };

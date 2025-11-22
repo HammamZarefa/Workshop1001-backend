@@ -62,6 +62,18 @@ class Product extends Model implements HasMedia
     {
         return $query->where('stock', '>', 0);
     }
+    //rating
+    public function ratings()
+    {
+    return $this->hasMany(Rating::class);
+    }
+    // rating calculation
+    public function averageRating()
+    {
+    return $this->ratings()->avg('rating');
+    }
+
+
 
 
 }

@@ -7,13 +7,14 @@ use App\Http\Requests\OrderStoreRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\Cart;
 use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends ApiController
 {
-    public function index(Request $request)
+    public function myOrders(Request $request)
     {
         $perPage = $this->perPage($request);
 
@@ -96,6 +97,16 @@ class OrderController extends ApiController
             $order->update([
                 'total' => $pricingService->orderTotal($order),
             ]);
+
+            // Mark the current pending cart as completed
+            $cart = Cart::where('user_id', auth()->id())
+                ->where('status', 'pending')
+                ->latest()
+                ->first();
+
+            if ($cart) {
+                $cart->update(['status' => 'completed']);
+            }
 
             return $order;
         });
