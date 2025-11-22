@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('coupon_id')->nullable()->constrained('coupons')->cascadeOnDelete();
             $table->decimal('coupon_value', 10, 2)->default(0);
             $table->string('shipping_address');
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
