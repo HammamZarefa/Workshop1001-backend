@@ -20,7 +20,7 @@ class OrderApiTest extends TestCase
     {
         parent::setUp();
 
-        // إنشاء بيانات أساسية
+
         $this->user = User::factory()->create();
         $this->product = Product::factory()->create();
     }
@@ -83,7 +83,7 @@ class OrderApiTest extends TestCase
 
         // Given an active cart for this user
         $cart = Cart::factory()->for($this->user)->create([
-            'status' => 'active',
+            'status' => 'pending',
         ]);
 
         // And a valid order payload

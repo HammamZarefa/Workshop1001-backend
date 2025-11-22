@@ -98,9 +98,9 @@ class OrderController extends ApiController
                 'total' => $pricingService->orderTotal($order),
             ]);
 
-            // Mark the current active cart as completed
+            // Mark the current pending cart as completed
             $cart = Cart::where('user_id', auth()->id())
-                ->where('status', 'active')
+                ->where('status', 'pending')
                 ->latest()
                 ->first();
 

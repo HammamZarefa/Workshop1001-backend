@@ -73,7 +73,7 @@ class CartApiTest extends TestCase
 
         // Create an active cart and a completed cart for the same user
         $activeCart = Cart::factory()->for($this->user)->create([
-            'status' => 'active',
+            'status' => 'pending',
         ]);
 
         Cart::factory()->for($this->user)->create([

@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('carts', function (Blueprint $table) {
-            $table->enum('status', ['active', 'completed'])->default('active')->after('user_id');
+            $table->enum('status', ['pending', 'completed'])->default('pending')->after('user_id');
         });
     }
 
