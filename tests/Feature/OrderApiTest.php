@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Cart;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -74,6 +75,40 @@ class OrderApiTest extends TestCase
 
         $this->assertDatabaseHas('orders', ['user_id' => $this->user->id]);
         $this->assertDatabaseHas('order_items', ['product_id' => $this->product->id]);
+    }
+
+    public function test_creating_order_marks_active_cart_as_completed()
+    {
+        $this->actingAs($this->user, 'sanctum');
+
+        // Given an active cart for this user
+        $cart = Cart::factory()->for($this->user)->create([
+            'status' => 'active',
+        ]);
+
+        // And a valid order payload
+        $payload = [
+            'shipping_address' => 'Amman, Jordan',
+            'currency' => 'USD',
+            'items' => [
+                [
+                    'product_id' => $this->product->id,
+                    'price' => $this->product->price,
+                    'quantity' => 1,
+                    'note' => null,
+                ],
+            ],
+        ];
+
+        $response = $this->postJson('/api/v1/orders', $payload);
+
+        $response->assertStatus(201);
+
+        // The previously active cart should now be completed
+        $this->assertDatabaseHas('carts', [
+            'id' => $cart->id,
+            'status' => 'completed',
+        ]);
     }
 
     public function test_can_fetch_order()

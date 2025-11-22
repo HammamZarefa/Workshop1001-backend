@@ -7,6 +7,7 @@ use App\Http\Requests\OrderStoreRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\Cart;
 use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -96,6 +97,16 @@ class OrderController extends ApiController
             $order->update([
                 'total' => $pricingService->orderTotal($order),
             ]);
+
+            // Mark the current active cart as completed
+            $cart = Cart::where('user_id', auth()->id())
+                ->where('status', 'active')
+                ->latest()
+                ->first();
+
+            if ($cart) {
+                $cart->update(['status' => 'completed']);
+            }
 
             return $order;
         });
