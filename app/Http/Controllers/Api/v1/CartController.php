@@ -18,37 +18,6 @@ use Illuminate\Validation\ValidationException;
 
 class CartController extends ApiController
 {
-<<<<<<< HEAD
-    public function index(Request $request, PricingService $pricingService)
-    {
-        $cart = Cart::with('items.product')
-            ->firstOrCreate(['user_id' => auth()->id()]);
-
-        $cart->load('items.product');
-        $coupon = null;
-        if ($code = $request->input('coupon_code')) {
-            $coupon = Coupon::where('code', $code)->first();
-
-            if (! $coupon) {
-                return $this->error('Invalid coupon code', [], 422);
-            }
-
-            $subtotal = $pricingService->cartSubtotal($cart);
-            if (! $coupon->isValid($subtotal, auth()->user())) {
-                return $this->error('Coupon is not valid for this cart', [], 422);
-            }
-        }
-
-        $totals = $pricingService->cartTotalsWithTax($cart, $coupon);
-
-        $resource = (new CartResource($cart))
-            ->additional(['meta' => ['pricing' => $totals]]);
-
-        return $this->ok('Cart fetched', $resource);
-    }
-
-    public function show($id, PricingService $pricingService, Request $request)
-=======
     public function __construct(private PricingService $pricingService)
     {
     }
@@ -65,41 +34,15 @@ class CartController extends ApiController
     }
 
     public function show($id, Request $request)
->>>>>>> 5f1b6e179892a2fe1068015be518e592951f5f39
     {
         $cart = Cart::with('items.product')->find($id);
         if (!$cart) return jsonError('Cart not found', [], 404);
         if ($cart->user_id !== auth()->id()) return jsonError('Unauthorized', [], 403);
 
-<<<<<<< HEAD
-        $cart->load('items.product');
-
-        $coupon = null;
-        if ($code = $request->input('coupon_code')) {
-            $coupon = Coupon::where('code', $code)->first();
-
-            if (! $coupon) {
-                return $this->error('Invalid coupon code', [], 422);
-            }
-
-            $subtotal = $pricingService->cartSubtotal($cart);
-            if (! $coupon->isValid($subtotal, auth()->user())) {
-                return $this->error('Coupon is not valid for this cart', [], 422);
-            }
-        }
-
-        $totals = $pricingService->cartTotalsWithTax($cart, $coupon);
-
-        $resource = (new CartResource($cart))
-            ->additional(['meta' => ['pricing' => $totals]]);
-
-        return $this->ok('Cart fetched', $resource);
-=======
         $coupon = $this->resolveCoupon($request, $cart);
         if ($coupon instanceof JsonResponse) return $coupon;
 
         return $this->cartResponse($cart, $coupon);
->>>>>>> 5f1b6e179892a2fe1068015be518e592951f5f39
     }
 
     public function store(CartStoreRequest $request)
