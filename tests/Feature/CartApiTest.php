@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Cart;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -64,5 +65,26 @@ class CartApiTest extends TestCase
 
         $this->assertDatabaseHas('carts', ['user_id' => $this->user->id]);
         $this->assertDatabaseHas('cart_items', ['product_id' => $this->product->id]);
+    }
+
+    public function test_active_cart_endpoint_returns_only_active_cart()
+    {
+        $this->actingAs($this->user, 'sanctum');
+
+        // Create an active cart and a completed cart for the same user
+        $activeCart = Cart::factory()->for($this->user)->create([
+            'status' => 'pending',
+        ]);
+
+        Cart::factory()->for($this->user)->create([
+            'status' => 'completed',
+        ]);
+
+        $response = $this->getJson('/api/v1/carts');
+
+        $response->assertStatus(200)
+            ->assertJsonFragment([
+                'id' => $activeCart->id,
+            ]);
     }
 }
