@@ -33,4 +33,36 @@ class RatingTest extends TestCase
             'rating' => 5,
         ]);
     }
+    /** @test */
+public function product_rating_average()
+{
+    $user = User::factory()->create();
+    $product = Product::factory()->create();
+
+    
+    Rating::create([
+        'product_id' => $product->id,
+        'user_id' => $user->id,
+        'rating' => 4,
+        'comment' => 'Good'
+    ]);
+
+    Rating::create([
+        'product_id' => $product->id,
+        'user_id' => $user->id,
+        'rating' => 2,
+        'comment' => 'Not bad'
+    ]);
+
+    
+    $response = $this->getJson("/api/v1/products/{$product->id}");
+
+    $response->assertStatus(200);
+
+    
+    $response->assertJson([
+        'average_rating' => 3.0
+    ]);
+}
+
 }
