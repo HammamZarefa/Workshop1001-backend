@@ -9,41 +9,48 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Rating;
+use App\Http\Traits\ApiResponses;
+use App\Http\Controllers\Api\ApiController;
+use App\Http\Requests\RatingRequest;
 
-class HomeController extends Controller
+class HomeController extends ApiController
 {
-
+    
     public function getCategory()
     {
+        return $this->tryCall(function () {
         $categories = Category::all();
-
-        return response()->json([
-            'data' => $categories
-        ]);
+        return $this->ok('Categories loaded', $categories);
+        });
     }
 
     public function getProducts()
     {
+        return $this->tryCall(function () {
+
         $products = Product::with('category')->available()->get();
 
-        return ProductResource::collection($products);
+        return $this->success('Products loaded', ProductResource::collection($products));
+        });
     }
 
     public function getProductById($id)
     {
  
+        return $this->tryCall(function () use ($id) {
         $product = Product::with('category','ratings')->available()->findOrFail($id);
 
-        return response()->json([
-            'product' => new ProductResource($product),
-            'average_rating' => round($product->averageRating(), 1),
-            'ratings' => $product->ratings
-]);
-
+        return $this->ok('Product loaded', [
+                'product'        => new ProductResource($product),
+                'average_rating' => round($product->averageRating(), 1),
+                'ratings'        => $product->ratings
+        ]);
+});
     }
 
  public function filterProducts(ProductRequest $request)
 {
+    return $this->tryCall(function () use ($request) {
     $products = Product::with('category')
         ->available()
         ->when($request->filled('category_id'), function ($query) use ($request) {
@@ -60,17 +67,13 @@ class HomeController extends Controller
         })
         ->get();
 
-    return ProductResource::collection($products);
+     return $this->success('Filtered products', ProductResource::collection($products));
+    });
 }
 //add rating
 public function addProductRating(Request $request)
 {
-    $request->validate([
-        'product_id' => 'required|exists:products,id',
-        'rating' => 'required|integer|min:1|max:5',
-        'comment' => 'nullable|string',
-    ]);
-
+    return $this->tryCall(function () use ($request) {
     $rating = Rating::create([
         'product_id' => $request->product_id,
         'user_id' => $request->user()->id,
@@ -78,13 +81,9 @@ public function addProductRating(Request $request)
         'comment' => $request->comment,
     ]);
 
-    return response()->json([
-        'message' => 'Rating added successfully',
-        'data' => $rating
-    ]);
+    return $this->ok('Rating added successfully', $rating);
+    });
+
 }
-
-
-
 
 }
