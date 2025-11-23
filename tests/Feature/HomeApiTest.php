@@ -90,7 +90,7 @@ class HomeApiTest extends TestCase
         Product::factory()->create([
             'category_id' => $category->id,
             'is_featured' => true,
-            'price' => 100,
+            'price' => 100, // Mutator سيضرب ×100 تلقائياً عند الحفظ
             'is_active' => true,
         ]);
 

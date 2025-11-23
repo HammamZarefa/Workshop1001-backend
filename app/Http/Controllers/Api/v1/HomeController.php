@@ -31,7 +31,7 @@ class HomeController extends Controller
 
     public function getProductById($id)
     {
- 
+
         $product = Product::with('category','ratings')->available()->findOrFail($id);
 
         return response()->json([
@@ -61,7 +61,10 @@ class HomeController extends Controller
         ->get();
 
     return ProductResource::collection($products);
+
+
 }
+
 //add rating
 public function addProductRating(Request $request)
 {

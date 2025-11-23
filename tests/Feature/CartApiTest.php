@@ -18,9 +18,15 @@ class CartApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->user = User::factory()->create();
-        $this->product = Product::factory()->create();
+
+        $this->product = Product::factory()->create([
+            'is_active' => true,
+            'stock' => 10, // ليتم تضمينه في scopeAvailable()
+        ]);
     }
+
 
     public function test_cannot_update_cart_with_wrong_item_price()
     {
