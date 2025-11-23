@@ -15,7 +15,7 @@ use App\Http\Requests\RatingRequest;
 
 class HomeController extends ApiController
 {
-    
+
     public function getCategory()
     {
         return $this->tryCall(function () {
@@ -36,7 +36,7 @@ class HomeController extends ApiController
 
     public function getProductById($id)
     {
- 
+
         return $this->tryCall(function () use ($id) {
         $product = Product::with('category','ratings')->available()->findOrFail($id);
 
