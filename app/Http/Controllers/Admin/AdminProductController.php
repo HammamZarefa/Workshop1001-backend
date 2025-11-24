@@ -4,7 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Models\Product;
 class AdminProductController extends Controller
 {
       public function __construct()
@@ -32,6 +32,9 @@ class AdminProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $data = $request->validated();
+        if ($request->hasFile('image')) {
+        $data['image'] = $request->file('image')->store('products', 'public');
+    }
         Product::create($data);
         return redirect()->route('admin.products.index')->with('success','Created');
     }
