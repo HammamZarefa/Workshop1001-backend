@@ -23,14 +23,14 @@ class HomeController extends Controller
 
     public function getProducts()
     {
-        $products = Product::with('category')->get();
+        $products = Product::with('category')->paginate(15);
 
         return ProductResource::collection($products);
     }
 
     public function getProductById($id)
     {
- 
+
         $product = Product::with('category')->findOrFail($id);
 
         return new ProductResource($product);
@@ -51,7 +51,7 @@ class HomeController extends Controller
         ->when($request->filled('max_price'), function ($query) use ($request) {
             $query->where('price', '<=', $request->max_price);
         })
-        ->get();
+        ->paginate(15) ;
 
     return ProductResource::collection($products);
 }
