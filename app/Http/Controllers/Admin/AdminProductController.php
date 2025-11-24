@@ -49,6 +49,7 @@ class AdminProductController extends Controller
     // update
     public function update(UpdateProductRequest $request, Product $product)
     {
+        $product = Product::findOrFail($id);
         $product->update($request->validated());
         return redirect()->route('admin.products.index')->with('success','Updated');
     }
