@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
      CategorySeeder::class,
     ProductSeeder::class,
     PaymentSeeder::class,
+    AdminSeeder::class,
 ]);
         $this->call(OnboardingSeeder::class);
 

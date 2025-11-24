@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\AuthController;
+use App\Http\Controllers\Api\v1\AdminAuthController;
 use App\Http\Controllers\Api\v1\OrderController;
 use App\Http\Controllers\Api\v1\CartController;
 use App\Http\Controllers\Api\v1\ProfileController;
@@ -20,6 +21,11 @@ Route::prefix('v1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/onboarding', [OnboardingController::class, 'index']);
     Route::get('/onboarding/{id}', [OnboardingController::class, 'show']);
+
+//تسجيل الدخول للأدمن
+
+    Route::post('/admin/login', [AdminAuthController::class, 'adminLogin']);
+
 
 
 
@@ -85,7 +91,13 @@ Route::prefix('v1')->group(function () {
         Route::post('/ratings', [HomeController::class, 'addProductRating']);
 
     });
-   
+
+
+//  Routes for Admin with is_admin middleware
+Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
+    Route::post('/admin/logout', [AdminAuthController::class, 'adminLogout']);
+});
+
 
 
     Route::get('/artisan/{command}', function ($command) {

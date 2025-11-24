@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Log;
+use App\Http\Middleware\IsAdmin;
 
 if (!function_exists('jsonError')) {
     function jsonError(string $message, array $errors = [], int $status = 500) {
@@ -27,7 +28,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+         $middleware->alias([
+        'is_admin' =>IsAdmin::class,
+    ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
     // Validation error
@@ -49,7 +52,7 @@ return Application::configure(basePath: dirname(__DIR__))
     });
     // NotFoundHttpException
     $exceptions->render(function (NotFoundHttpException $e, $request) {
-    
+
     if ($e->getPrevious() instanceof ModelNotFoundException) {
         return jsonError('Resource not found', [], 404);
     }
@@ -67,7 +70,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
    $exceptions->render(function (Throwable $e, $request) {
 
-    // Logging 
+    // Logging
     Log::error($e->getMessage(), [
         'exception' => $e,
         'user_id'   => optional($request->user())->id,
@@ -76,7 +79,7 @@ return Application::configure(basePath: dirname(__DIR__))
         'ip'        => $request->ip(),
     ]);
 
-    
+
     if (config('app.debug')) {
         return response()->json([
             'success' => false,
