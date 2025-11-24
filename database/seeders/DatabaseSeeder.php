@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
     BannerSeeder::class,
      CategorySeeder::class,
     ProductSeeder::class,
+    PaymentSeeder::class,
 ]);
         $this->call(OnboardingSeeder::class);
 

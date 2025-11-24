@@ -3,6 +3,7 @@
 .DS_Store
 Thumbs.db
 /.idea
+/.idea/workspace.xml
 /.vscode
 /.fleet
 /.nova
@@ -10,7 +11,9 @@ Thumbs.db
 /.phpunit.cache
 .phpunit.result.cache
 .phpactor.json
+.idea/workspace.xml
 
+/storage
 # Environment files
 .env
 .env.backup
@@ -21,7 +24,8 @@ Thumbs.db
 /node_modules
 /public/build
 /public/hot
-
+./storage
+.idea
 # Laravel specific
 /vendor
 /public/storage

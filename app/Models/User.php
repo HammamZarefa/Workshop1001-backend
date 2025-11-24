@@ -69,4 +69,10 @@ class User extends Authenticatable implements HasMedia
     {
         $this->addMediaCollection('avatars')->singleFile(); // صورة الملف الشخصي
     }
+    //rating
+    public function ratings()
+{
+    return $this->hasMany(Rating::class);
+}
+
 }
