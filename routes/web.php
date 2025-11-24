@@ -9,5 +9,10 @@ require 'api.php';
 Route::middleware(['auth','is_admin'])
     ->prefix('admin')
     ->group(function(){
-    Route::resource('products', AdminProductController::class);
+    //store
+    Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
+    //update
+    Route::put('/products/{id}', [AdminProductController::class, 'update'])->name('products.update');
+    // destroy
+     Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
     });

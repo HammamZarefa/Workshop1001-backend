@@ -55,10 +55,39 @@ class AdminProductController extends Controller
     }
 
     // soft delete
-    public function destroy(Product $product)
-    {
-        $product->delete();
-        return redirect()->route('admin.products.index')->with('success','Deleted');
+    public function destroy($id)
+{
+    $product = Product::find($id);
+
+    if (!$product) {
+        return response()->json([
+            'success' => false,
+            'message' => 'product not found'
+        ], 404);
     }
+
+    
+    if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {
+        unlink(public_path('uploads/products/' . $product->image));
+    }
+
+    
+    if ($product->gallery) {
+        foreach ($product->gallery as $img) {
+            if (file_exists(public_path('uploads/products/gallery/' . $img))) {
+                unlink(public_path('uploads/products/gallery/' . $img));
+            }
+        }
+    }
+
+
+    $product->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'The Product Was Successfully Deleted'
+    ], 200);
+}
+
 
 }
