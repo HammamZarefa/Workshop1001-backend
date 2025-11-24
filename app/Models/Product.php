@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Product extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia , SoftDeletes;
 
     protected $fillable = [
         'category_id',
