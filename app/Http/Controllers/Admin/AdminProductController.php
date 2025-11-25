@@ -5,6 +5,10 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Http\Requests\StockUpdateRequest;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
+
 class AdminProductController extends Controller
 {
       public function __construct()
@@ -88,6 +92,41 @@ class AdminProductController extends Controller
         'message' => 'The Product Was Successfully Deleted'
     ], 200);
 }
+    //update Stock
+   public function updateStock(StockUpdateRequest $request, $id)
+{
+    $product = Product::find($id);
+
+    if (!$product) {
+        return response()->json([
+            'success' => false,
+            'message' => 'product not found'
+        ], 404);
+    }
+
+    $data = $request->validated();
+
+    if (isset($data['delta'])) {
+        $product->quantity += $data['delta'];
+    }
+
+    if (isset($data['quantity'])) {
+        $product->quantity = $data['quantity'];
+    }
+
+    if ($product->quantity < 0) {
+        $product->quantity = 0;
+    }
+
+    $product->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'product updated successfully',
+        'quantity' => $product->quantity
+    ], 200);
+}
+
 
 
 }
