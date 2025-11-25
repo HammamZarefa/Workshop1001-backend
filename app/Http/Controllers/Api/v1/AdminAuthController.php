@@ -12,47 +12,46 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 
 class AdminAuthController extends Controller
 {
-    use ApiResponses;
 
-
-    public function adminLogin(LoginRequest $request)
-{
-    $data = $request->validated();
-
-    $user = User::where('email', $data['email'])->first();
-
-
-    if (!$user || !Hash::check($data['password'], $user->password)) {
-        return $this->error('Invalid credentials', 401);
+public function showLoginForm()
+    {
+        return view('admin.auth.login');
     }
 
-    if (!$user->is_admin) {
-        return $this->notAuthorized('You are not authorized as admin');
+    public function login(Request $request)
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required']
+        ]);
+
+        if (Auth::attempt($data)) {
+            $request->session()->regenerate();
+
+            if (!auth()->user()->is_admin) {
+                Auth::logout();
+                return back()->withErrors(['email' => 'You are not authorized'])->withInput();
+            }
+
+            return redirect()->route('admin.dashboard');
+        }
+
+        return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
     }
 
-    $tokenName = $request->device_type ?? 'admin_token';
-    $token = $user->createToken($tokenName)->plainTextToken;
 
-    return $this->success('Admin logged in successfully', [
-        'admin' => new UserResource($user),
-        'token' => $token,
-        'token_type' => $tokenName,
-    ]);
-}
+    public function logout(Request $request)
+    {
+        Auth::logout();
 
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-
-
-public function adminLogout(Request $request)
-{
-    $request->user()->currentAccessToken()->delete();
-
-    return $this->success('Admin logged out successfully');
-}
-
-
+        return redirect()->route('admin.login.form');
+    }
 }
