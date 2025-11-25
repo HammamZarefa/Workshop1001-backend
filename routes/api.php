@@ -74,8 +74,6 @@ Route::prefix('v1')->group(function () {
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
 
-        
-
         // Carts
         Route::get('carts', [CartController::class, 'activeCart'])->name('carts.index');
         Route::get('carts/{cart}', [CartController::class, 'show'])->name('carts.show');

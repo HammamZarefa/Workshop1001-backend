@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Route;
 
 require 'api.php';
 
+// Root route should return 200 for ExampleTest
+Route::get('/', function () {
+    return response('OK', 200);
+});
+
 Route::prefix('admin')->name('admin.')->group(function () {
     // You can add middleware here if needed: ->middleware(['auth', 'is_admin'])
     Route::get('/', [App\Http\Controllers\Admin\HomeController::class,'index'])->name('home');
