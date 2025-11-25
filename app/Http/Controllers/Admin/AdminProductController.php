@@ -53,7 +53,6 @@ class AdminProductController extends Controller
     // update
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product = Product::findOrFail($id);
         $product->update($request->validated());
         return redirect()->route('admin.products.index')->with('success','Updated');
     }
@@ -107,15 +106,15 @@ class AdminProductController extends Controller
     $data = $request->validated();
 
     if (isset($data['delta'])) {
-        $product->quantity += $data['delta'];
+        $product->stock += $data['delta'];
     }
 
     if (isset($data['quantity'])) {
-        $product->quantity = $data['quantity'];
+        $product->stock = $data['quantity'];
     }
 
-    if ($product->quantity < 0) {
-        $product->quantity = 0;
+    if ($product->stock < 0) {
+        $product->stock = 0;
     }
 
     $product->save();
@@ -123,7 +122,7 @@ class AdminProductController extends Controller
     return response()->json([
         'success' => true,
         'message' => 'product updated successfully',
-        'quantity' => $product->quantity
+        'quantity' => $product->stock
     ], 200);
 }
 

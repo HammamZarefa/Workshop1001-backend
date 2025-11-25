@@ -23,7 +23,7 @@ class StockUpdateRequest extends FormRequest
     {
        return [
             'delta'    => 'nullable|integer',
-            'quantity' => 'nullable|integer|min:0',
+            'stock' => 'nullable|integer|min:0',
         ];
     }
 }
