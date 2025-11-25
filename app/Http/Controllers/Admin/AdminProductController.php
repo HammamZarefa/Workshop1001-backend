@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,10 +11,7 @@ use App\Http\Requests\UpdateProductRequest;
 
 class AdminProductController extends Controller
 {
-      public function __construct()
-    {
-        $this->middleware(['auth', 'is_admin']);
-    }
+     
     /**
      * Display a listing of the resource.
      */
@@ -109,8 +106,8 @@ class AdminProductController extends Controller
         $product->stock += $data['delta'];
     }
 
-    if (isset($data['quantity'])) {
-        $product->stock = $data['quantity'];
+    if (isset($data['stock'])) {
+        $product->stock = $data['stock'];
     }
 
     if ($product->stock < 0) {
@@ -122,7 +119,7 @@ class AdminProductController extends Controller
     return response()->json([
         'success' => true,
         'message' => 'product updated successfully',
-        'quantity' => $product->stock
+        'stock' => $product->stock
     ], 200);
 }
 

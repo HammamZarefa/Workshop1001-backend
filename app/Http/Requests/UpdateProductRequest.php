@@ -22,7 +22,7 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
          return [
-        'name'        => 'sometimes|required|string|max:255',
+        'title'        => 'sometimes|required|string|max:255',
         'price'       => 'sometimes|required|numeric|min:0',
         'description' => 'nullable|string',
         'category_id' => 'nullable|exists:categories,id',

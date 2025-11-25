@@ -41,4 +41,11 @@ class UserFactory extends Factory
                 ->toMediaCollection('avatars');
         });
     }
+        public function admin()
+    {
+        return $this->state(fn () => [
+            'is_admin' => true,
+        ]);
+    }
+
 }
