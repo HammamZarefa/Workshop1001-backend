@@ -10,53 +10,55 @@ use Tests\TestCase;
 class AdminAuthControllerTest extends TestCase
 {
     use RefreshDatabase;
-
+  protected function setUp(): void
+    {
+        parent::setUp();
+        $this->withSession([]);
+        $this->withoutExceptionHandling();
+    }
     /** @test */
     public function admin_can_login_successfully()
     {
-
         $password = 'password123';
+
         $admin = User::factory()->create([
             'email' => 'admin@example.com',
             'password' => $password,
-             'is_admin' => true,
+            'is_admin' => true,
             'is_active' => true,
         ]);
 
-        $payload = [
-            'email' => $admin->email,
-            'password' => $password,
+        $response = $this->post('/admin/login', [
+            'email' => 'admin@example.com',
+            'password' =>$password ,
+        ]);
 
-        ];
+        $response->assertRedirect(route('admin.dashboard'));
 
-        $response = $this->postJson('/api/v1/admin/login', $payload);
-
-       $response->assertJsonStructure([
-    'message',
-    'data' => [
-        'admin',
-        'token',
-        'token_type',
-    ]
-]);
+        $this->assertAuthenticatedAs($admin);
     }
 
     /** @test */
     public function non_admin_cannot_login_as_admin()
     {
+        $password = 'password123';
+
         $user = User::factory()->create([
             'email' => 'user@example.com',
-            'password' => Hash::make('password'),
+            'password' => Hash::make($password),
             'is_admin' => false,
             'is_active' => true,
         ]);
 
-        $response = $this->postJson('/api/v1/admin/login', [
+        $response = $this->post('/admin/login', [
             'email' => 'user@example.com',
-            'password' => 'password'
+            'password' => $password,
         ]);
 
-        $response->assertStatus(401);
+
+        $response->assertSessionHasErrors(['error']);
+
+        $this->assertGuest();
     }
 
     /** @test */
@@ -64,52 +66,46 @@ class AdminAuthControllerTest extends TestCase
     {
         User::factory()->create([
             'email' => 'admin@example.com',
-            'password' => Hash::make('admin12345'),
+            'password' => Hash::make('correctpassword'),
             'is_admin' => true,
             'is_active' => true,
         ]);
 
-        $response = $this->postJson('/api/v1/admin/login', [
+        $response = $this->post('/admin/login', [
             'email' => 'admin@example.com',
-            'password' => 'wrongpassword'
+            'password' => 'wrongpassword',
         ]);
 
-        $response->assertStatus(401);
+        $response->assertSessionHasErrors(['error']);
+        $this->assertGuest();
     }
 
     /** @test */
     public function admin_can_logout_successfully()
     {
+        $password = 'password123';
+
         $admin = User::factory()->create([
             'is_admin' => true,
             'is_active' => true,
+            'password' => $password,
         ]);
 
-        $token = $admin->createToken('test')->plainTextToken;
-
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-            ->postJson('/api/v1/admin/logout');
-
-        $response->assertStatus(200)
-                 ->assertJson([
-                     'status' => 200,
-                     'message' => 'Admin logged out successfully'
-                 ]);
-    }
-
-    /** @test */
-    public function non_admin_cannot_access_logout_route()
-    {
-        $user = User::factory()->create([
-            'is_admin' => false,
-            'is_active' => true,
+        $this->post('/admin/login', [
+            'email' => $admin->email,
+            'password' => $password,
         ]);
 
-        $token = $user->createToken('test')->plainTextToken;
+        $this->assertAuthenticated();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-            ->postJson('/api/v1/admin/logout');
 
-        $response->assertStatus(400);
+        $response = $this->post('/admin/logout');
+
+        $response->assertRedirect(route('admin.login.form'));
+
+
+        $this->assertGuest();
     }
+
+   
 }

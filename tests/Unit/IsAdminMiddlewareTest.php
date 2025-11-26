@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Http\Middleware\IsAdmin;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class IsAdminMiddlewareTest extends TestCase
@@ -41,7 +40,7 @@ class IsAdminMiddlewareTest extends TestCase
             return response('OK', 200);
         });
 
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(302, $response->getStatusCode());
     }
 
     /** @test */
@@ -56,6 +55,6 @@ class IsAdminMiddlewareTest extends TestCase
             return response('OK', 200);
         });
 
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(302, $response->getStatusCode());
     }
 }

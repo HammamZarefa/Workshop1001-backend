@@ -1,21 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Resources\UserResource;
-use App\Http\Traits\ApiResponses;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
-
-class AdminAuthController extends Controller
+class AuthController extends Controller
 {
 
 public function showLoginForm()
@@ -35,13 +27,13 @@ public function showLoginForm()
 
             if (!auth()->user()->is_admin) {
                 Auth::logout();
-                return back()->withErrors(['email' => 'You are not authorized'])->withInput();
+                return back()->withErrors(['error' => 'You are not authorized'])->withInput();
             }
 
             return redirect()->route('admin.dashboard');
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
+        return back()->withErrors(['error' => 'Invalid credentials'])->withInput();
     }
 
 

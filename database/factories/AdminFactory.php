@@ -21,7 +21,7 @@ class AdminFactory extends Factory
             'address' => 'Admin Office',
             'is_admin' => true,
             'is_active' => true,
-            'password' => bcrypt('admin12345'),
+            'password' => 'admin12345',
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ];
