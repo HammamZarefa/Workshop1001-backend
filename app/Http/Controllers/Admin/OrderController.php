@@ -98,12 +98,23 @@ class OrderController extends Controller
 
         DB::transaction(function () use ($order, $data) {
             $product = Product::findOrFail($data['product_id']);
-            $order->items()->create([
-                'product_id' => $product->id,
-                'price'      => $product->price,
-                'quantity'   => $data['quantity'],
-                'note'       => $data['note'] ?? null,
-            ]);
+
+            $existing = $order->items()->where('product_id', $product->id)->first();
+
+            if ($existing) {
+                $existing->update([
+                    'price'    => $product->price,
+                    'quantity' => $existing->quantity + $data['quantity'],
+                    'note'     => $data['note'] ?? $existing->note,
+                ]);
+            } else {
+                $order->items()->create([
+                    'product_id' => $product->id,
+                    'price'      => $product->price,
+                    'quantity'   => $data['quantity'],
+                    'note'       => $data['note'] ?? null,
+                ]);
+            }
 
             $total = $order->items()
                 ->selectRaw('SUM(price * quantity) AS total')

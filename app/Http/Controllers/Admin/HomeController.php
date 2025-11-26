@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Filters\OrderFilter;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,14 +11,7 @@ class HomeController
 {
     public function index(Request $request)
     {
-        $base = Order::query();
-
-        if ($request->filled('from_date')) {
-            $base->whereDate('created_at', '>=', $request->input('from_date'));
-        }
-        if ($request->filled('to_date')) {
-            $base->whereDate('created_at', '<=', $request->input('to_date'));
-        }
+        $base = (new OrderFilter($request))->apply(Order::query());
 
         $totalSales  = (clone $base)->sum('total');
         $totalOrders = (clone $base)->count();
