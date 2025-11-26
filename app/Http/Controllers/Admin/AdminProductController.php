@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Http\Requests\StockUpdateRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Category;
 
 class AdminProductController extends Controller
 {
@@ -26,8 +27,10 @@ class AdminProductController extends Controller
     // create 
     public function create()
     {
-        return view('admin.products.create');
+    $categories = Category::all(); 
+    return view('admin.products.create', compact('categories'));
     }
+
 
     //store
     public function store(StoreProductRequest $request)
@@ -42,10 +45,11 @@ class AdminProductController extends Controller
 
 
     // edit
-    public function edit(Product $product)
-    {
-        return view('admin.products.edit', compact('product'));
-    }
+   public function edit(Product $product)
+{
+    $categories = Category::all(); 
+    return view('admin.products.edit', compact('product', 'categories'));
+}
 
     // update
     public function update(UpdateProductRequest $request, Product $product)
@@ -122,6 +126,7 @@ class AdminProductController extends Controller
         'stock' => $product->stock
     ], 200);
 }
+   
 
 
 
