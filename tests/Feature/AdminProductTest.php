@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\Test;
 class AdminProductTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     protected function createAdminUser()
     {
         return User::factory()->admin()->create();
@@ -42,10 +42,10 @@ class AdminProductTest extends TestCase
         $response = $this->actingAs($admin)->get('/admin/products/create');
 
         $response->assertStatus(200);
-        
+
     }
 
-   
+
     /** @test */
     public function admin_can_view_edit_page()
     {
@@ -55,7 +55,7 @@ class AdminProductTest extends TestCase
         $response = $this->actingAs($admin)->get("/admin/products/{$product->id}/edit");
 
         $response->assertStatus(200);
-       
+
     }
 
     /** @test */
@@ -88,7 +88,8 @@ class AdminProductTest extends TestCase
         $response = $this->actingAs($admin)->delete("/admin/products/{$product->id}");
 
         $this->assertSoftDeleted('products', ['id' => $product->id]);
-        $response->assertStatus(200);
+        $response->assertRedirect(route('admin.products.index'));
+
     }
 
     /** @test */
@@ -101,17 +102,23 @@ class AdminProductTest extends TestCase
             'delta' => 2
         ]);
 
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('products', ['id' => $product->id, 'stock' => 7]);
+        $response->assertRedirect(route('admin.products.index'));
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'stock' => 7
+        ]);
 
         $response = $this->actingAs($admin)->patch("/admin/products/{$product->id}/stock", [
             'stock' => 3
         ]);
 
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('products', ['id' => $product->id, 'stock' => 3]);
+        $response->assertRedirect(route('admin.products.index'));
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'stock' => 3
+        ]);
     }
-    
+
     /** @test */
 public function non_admin()
 {

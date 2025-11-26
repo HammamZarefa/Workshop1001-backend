@@ -33,4 +33,6 @@ require 'api.php';
     Route::get('/products/{product}/edit', [AdminProductController::class, 'edit'])->name('admin.products.edit');
      Route::post('/products', [AdminProductController::class, 'store'])->name('admin.products.store');
      Route::put('/products/{product}', [AdminProductController::class, 'update'])->name('admin.products.update');
-});
+     Route::patch('/products/{id}/stock', [AdminProductController::class, 'updateStock'])->name('admin.products.updateStock');
+
+ });

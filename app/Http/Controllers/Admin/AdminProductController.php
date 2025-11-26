@@ -12,11 +12,11 @@ use App\Models\Category;
 
 class AdminProductController extends Controller
 {
-     
+
     /**
      * Display a listing of the resource.
      */
-  
+
     // index
     public function index()
     {
@@ -24,10 +24,10 @@ class AdminProductController extends Controller
         return view('admin.products.index', compact('products'));
     }
 
-    // create 
+    // create
     public function create()
     {
-    $categories = Category::all(); 
+    $categories = Category::all();
     return view('admin.products.create', compact('categories'));
     }
 
@@ -36,18 +36,21 @@ class AdminProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $data = $request->validated();
+        $product = Product::create($data);
+
         if ($request->hasFile('image')) {
-        $data['image'] = $request->file('image')->store('products', 'public');
-    }
-        Product::create($data);
-        return redirect()->route('admin.products.index')->with('success','Created');
+            $product
+                ->addMediaFromRequest('image')
+                ->toMediaCollection('products');
+        }
+        return redirect()->route('admin.products.index')->with('success', 'Created');
     }
 
 
     // edit
    public function edit(Product $product)
 {
-    $categories = Category::all(); 
+    $categories = Category::all();
     return view('admin.products.edit', compact('product', 'categories'));
 }
 
@@ -70,12 +73,12 @@ class AdminProductController extends Controller
         ], 404);
     }
 
-    
+
     if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {
         unlink(public_path('uploads/products/' . $product->image));
     }
 
-    
+
     if ($product->gallery) {
         foreach ($product->gallery as $img) {
             if (file_exists(public_path('uploads/products/gallery/' . $img))) {
@@ -87,10 +90,9 @@ class AdminProductController extends Controller
 
     $product->delete();
 
-    return response()->json([
-        'success' => true,
-        'message' => 'The Product Was Successfully Deleted'
-    ], 200);
+    return redirect()
+        ->route('admin.products.index')
+        ->with('success', 'The product was successfully deleted');
 }
     //update Stock
    public function updateStock(StockUpdateRequest $request, $id)
@@ -120,13 +122,11 @@ class AdminProductController extends Controller
 
     $product->save();
 
-    return response()->json([
-        'success' => true,
-        'message' => 'product updated successfully',
-        'stock' => $product->stock
-    ], 200);
+    return redirect()
+        ->route('admin.products.index')
+        ->with('success', 'Stock updated successfully');
 }
-   
+
 
 
 
