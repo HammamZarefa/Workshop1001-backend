@@ -126,6 +126,45 @@ public function non_admin()
     $response = $this->actingAs($user)->get('/admin/products');
     $response->assertStatus(403);
 }
+    /** @test */
+    public function it_can_store_a_product_with_featured_and_gallery_images()
+    {
+        Storage::fake('public');
+
+        $category = Category::factory()->create();
+
+     $featuredFile = UploadedFile::fake()->image('featured.jpg');
+        $galleryFiles = [
+            UploadedFile::fake()->image('gallery1.jpg'),
+            UploadedFile::fake()->image('gallery2.jpg'),
+        ];
+
+        $response = $this->post(route('admin.products.store'), [
+            'title' => 'Test Product',
+            'description' => 'Test description',
+            'category_id' => $category->id,
+            'price' => 99.99,
+            'stock' => 10,
+            'featured' => $featuredFile,
+            'gallery' => $galleryFiles,
+        ]);
+
+        $response->assertRedirect(route('admin.products.index'));
+        $this->assertDatabaseHas('products', ['title' => 'Test Product']);
+
+        $product = Product::first();
+
+        $this->assertCount(1, $product->getMedia('featured'));
+        $this->assertCount(2, $product->getMedia('gallery'));
+
+
+        Storage::disk('public')->assertExists($product->getFirstMedia('featured')->id . '/' . $product->getFirstMedia('featured')->file_name);
+
+        foreach ($product->getMedia('gallery') as $media) {
+            Storage::disk('public')->assertExists($media->id . '/' . $media->file_name);
+        }
+    }
+
 
 
 

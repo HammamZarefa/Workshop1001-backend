@@ -9,8 +9,10 @@ use App\Http\Requests\StockUpdateRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class AdminProductController extends Controller
+
+class ProductController extends Controller
 {
 
     /**
@@ -38,10 +40,17 @@ class AdminProductController extends Controller
         $data = $request->validated();
         $product = Product::create($data);
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('featured')) {
             $product
-                ->addMediaFromRequest('image')
-                ->toMediaCollection('products');
+                ->addMediaFromRequest('featured')
+                ->toMediaCollection('featured');
+        }
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $image) {
+                $product
+                    ->addMedia($image)
+                    ->toMediaCollection('gallery');
+            }
         }
         return redirect()->route('admin.products.index')->with('success', 'Created');
     }
@@ -58,8 +67,28 @@ class AdminProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $product->update($request->validated());
-        return redirect()->route('admin.products.index')->with('success','Updated');
+
+        if ($request->hasFile('featured')) {
+
+            $product->clearMediaCollection('featured');
+
+
+            $product->addMediaFromRequest('featured')
+                ->toMediaCollection('featured');
+        }
+
+
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $image) {
+                $product->addMedia($image)
+                    ->toMediaCollection('gallery');
+            }
+        }
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Product updated successfully');
     }
+
 
     // soft delete
     public function destroy($id)
@@ -126,6 +155,30 @@ class AdminProductController extends Controller
         ->route('admin.products.index')
         ->with('success', 'Stock updated successfully');
 }
+
+    public function destroyGallery(Media $media)
+    {
+        try {
+            $media->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Image deleted'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete media: '.$e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete image'
+            ], 500);
+        }
+    }
+
+
+
+
+
+
 
 
 

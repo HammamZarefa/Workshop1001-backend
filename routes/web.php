@@ -2,12 +2,12 @@
 
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Api\v1\HomeController;
+use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('dashboard');
 });
-require 'api.php';
 Route::get('/', function () {
     return response('OK', 200);
 });
@@ -21,23 +21,40 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('orders/{order}/items', [OrderController::class, 'addItem'])->name('orders.items.add');
     Route::get('products/search', [OrderController::class, 'productSearch'])->name('products.search');
 });
-Route::middleware(['auth','is_admin'])
-    ->prefix('admin')
-    ->name('admin.products.')
-    ->group(function(){
-        //index
-        Route::get('/products', [AdminProductController::class, 'index'])->name('index');
-        //create
-        Route::get('/products/create', [AdminProductController::class, 'create'])->name('create');;
-        //edit
-        Route::get('/products/{product}/edit', [AdminProductController::class, 'edit']) ->name('edit');;
-        //store
-        Route::post('/products', [AdminProductController::class, 'store'])->name('store');
-        //update
-        Route::put('/products/{product}', [AdminProductController::class, 'update'])->name('update');
+//Route::
+//    prefix('admin')
+//    ->name('admin.products.')
+//    ->group(function(){
+//        //index
+//        Route::get('/products', [ProductController::class, 'index'])->name('index');
+//        //create
+//      //  Route::get('/products/create', [ProductController::class, 'create'])->name('create');;
+//        //edit
+//        Route::get('/products/{product}/edit', [ProductController::class, 'edit']) ->name('edit');;
+//        //store
+//        Route::post('/products', [ProductController::class, 'store'])->name('store');
+//        //update
+//        Route::put('/products/{product}', [ProductController::class, 'update'])->name('update');
+//
+//        // destroy
+//        Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('destroy');
+//        //stock(update quantity)
+//        Route::patch('/products/{id}/stock', [ProductController::class, 'updateStock'])->name('updateStock');
+//    });
+Route::prefix('admin')->group(function(){
+    Route::get('/products', [ProductController::class, 'index']) ->name('admin.products.index');;
+    Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');;
+    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
+    Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::patch('/products/{id}/stock', [ProductController::class, 'updateStock'])->name('admin.products.updateStock');
+    Route::delete('/admin/products/gallery/{media}', [ProductController::class, 'destroyGallery'])
+        ->name('admin.products.gallery.delete');
 
-        // destroy
-        Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('destroy');
-        //stock(update quantity)
-        Route::patch('/products/{id}/stock', [AdminProductController::class, 'updateStock'])->name('updateStock');
-    });
+
+
+
+
+
+});
