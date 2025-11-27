@@ -13,19 +13,20 @@ class CategorySeeder extends Seeder
             [
                 'title' => 'ملابس',
                 'is_active' => true,
-                'image' => public_path('images/category1.png'),
+                'image_url' => 'https://images.pexels.com/photos/573130/pexels-photo-573130.jpeg',
             ],
+            /*
             [
                 'title' => 'أحذية',
                 'is_active' => false,
-                'image' => public_path('images/category2.png'),
+                'image_url' => public_path('images/category2.png'),
             ],
             [
                 'title' => 'إلكترونيات',
                 'is_active' => false,
-                'image' => public_path('images/category3.png'),
+                'image_url' => public_path('images/category3.png'),
             ],
-        
+            */
         ];
 
         foreach ($data as $item) {
@@ -34,10 +35,16 @@ class CategorySeeder extends Seeder
                 'is_active' => $item['is_active'],
             ]);
 
-            if (file_exists($item['image'])) {
-                $category->addMedia($item['image'])
-                    ->preservingOriginal()
-                    ->toMediaCollection('icon');
+            // --- رفع الصورة بعد إنشاء الموديل ---
+            if (!empty($item['image_url'])) {
+                try {
+                    $category
+                        ->addMediaFromUrl($item['image_url'])
+                        ->toMediaCollection('icon');
+                } catch (\Exception $e) {
+                    dump("faild" . $item['title']);
+                    dump($e->getMessage());
+                }
             }
         }
     }

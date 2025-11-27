@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\CategoryResource;
 use App\Models\Rating;
 use App\Http\Traits\ApiResponses;
 use App\Http\Controllers\Api\ApiController;
@@ -18,10 +19,9 @@ class HomeController extends ApiController
 
     public function getCategory()
     {
-        return $this->tryCall(function () {
-        $categories = Category::all();
-        return $this->ok('Categories loaded', $categories);
-        });
+        $categories = Category::orderBy('id', 'asc')->get();
+
+        return CategoryResource::collection($categories);
     }
 
     public function getProducts()
