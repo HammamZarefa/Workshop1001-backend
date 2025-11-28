@@ -27,6 +27,7 @@ class ProductResource extends JsonResource
             'is_active'    => $this->is_active,
             'is_featured'  => $this->is_featured,
             'colors'       => $this->colors,
+            'is_special' => $this->is_special,
             'featured_image' => $this->getFirstMedia('featured')
                 ? $this->getFirstMedia('featured')->getUrl()
                 : null,
