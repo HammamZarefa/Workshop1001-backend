@@ -31,6 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
          $middleware->alias([
         'is_admin' =>IsAdmin::class,
     ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
     // Validation error

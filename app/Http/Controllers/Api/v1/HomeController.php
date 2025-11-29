@@ -28,7 +28,7 @@ class HomeController extends ApiController
     {
         return $this->tryCall(function () {
 
-        $products = Product::with('category')->available()->get();
+        $products = Product::with('category')->available()->paginate(15);
 
         return $this->success('Products loaded', ProductResource::collection($products));
         });
@@ -65,7 +65,7 @@ class HomeController extends ApiController
         ->when($request->filled('max_price'), function ($query) use ($request) {
             $query->where('price', '<=', $request->max_price);
         })
-        ->get();
+        ->paginate(15);
 
      return $this->success('Filtered products', ProductResource::collection($products));
     });

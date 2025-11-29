@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Api\v1\HomeController;
+use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 
@@ -34,5 +37,19 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::post('/admin/logout', [AuthController::class, 'logout'])
         ->name('admin.logout');
 });
+Route::get('/', function () {
+    return response('OK', 200);
+});
 
-require 'api.php';
+Route::prefix('admin')->group(function(){
+    Route::get('/products', [ProductController::class, 'index']) ->name('admin.products.index');;
+    Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');;
+    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
+    Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::patch('/products/{id}/stock', [ProductController::class, 'updateStock'])->name('admin.products.updateStock');
+    Route::delete('/admin/products/gallery/{media}', [ProductController::class, 'destroyGallery'])
+        ->name('admin.products.gallery.delete');
+
+});
