@@ -85,7 +85,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/ratings', [HomeController::class, 'addProductRating']);
 
     });
-   
+
+
 
 
     Route::get('/artisan/{command}', function ($command) {
