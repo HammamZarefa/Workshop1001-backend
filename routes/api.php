@@ -61,7 +61,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);
 
         // Users (Admin-like API)
-//        Route::apiResource('users', UserController::class);
+       Route::apiResource('users', UserController::class);
 
         // Profile
         Route::prefix('profile')->group(function () {
