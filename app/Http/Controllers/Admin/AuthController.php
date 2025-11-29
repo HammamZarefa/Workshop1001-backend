@@ -30,7 +30,7 @@ public function showLoginForm()
                 return back()->withErrors(['error' => 'You are not authorized'])->withInput();
             }
 
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.home');
         }
 
         return back()->withErrors(['error' => 'Invalid credentials'])->withInput();
