@@ -27,13 +27,13 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
         ]);
         $this->call([
-    BannerSeeder::class,
-     CategorySeeder::class,
-    ProductSeeder::class,
-    OrderSeeder::class,
-    PaymentSeeder::class,
-
-]);
+            BannerSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
+            OrderSeeder::class,
+            PaymentSeeder::class,
+            CartSeeder::class,
+        ]);
         $this->call(OnboardingSeeder::class);
 
 
