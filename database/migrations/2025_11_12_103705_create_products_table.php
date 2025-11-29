@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('is_featured')->default(false); 
             $table->json('colors')->nullable();
             $table->timestamps();
+            $table->softDeletes(); 
         });
     }
 

@@ -17,15 +17,15 @@ class CategorySeeder extends Seeder
             ],
             [
                 'title' => 'أحذية',
-                'is_active' => false,
+                'is_active' => true,
                 'image' => public_path('images/category2.png'),
             ],
             [
                 'title' => 'إلكترونيات',
-                'is_active' => false,
+                'is_active' => true,
                 'image' => public_path('images/category3.png'),
             ],
-        
+
         ];
 
         foreach ($data as $item) {
