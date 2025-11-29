@@ -15,7 +15,7 @@ class Category extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('icon')->singleFile();
+        $this->addMediaCollection('categories')->singleFile();
     }
 
        protected static function booted()

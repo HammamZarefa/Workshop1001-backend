@@ -19,8 +19,10 @@ class ProductSeeder extends Seeder
                 'stock' => 20,
                 'is_active' => 1,
                 'is_featured' => 1,
-                'colors' => ['black', 'silver'],
+
                 'featured' => public_path('images/featured.jpg'),
+                'is_special' => true,
+                'colors' => json_encode(['#FF5733', '#1ABC9C']),
                 'gallery' => [
                     public_path('images/gallery1.jpg'),
                     public_path('images/gallery2.jpg'),
@@ -32,15 +34,32 @@ class ProductSeeder extends Seeder
                 'price' => 220,
                 'currency' => 'SAR',
                 'stock' => 15,
-                'is_active' => 0,
+                'is_active' => 1,
                 'is_featured' => 0,
-                'colors' => ['red', 'blue'],
+                'is_special' => true,
+                'colors' => json_encode(['#FF5733', '#1ABC9C']),
                 'featured' => public_path('images/featured2.jpg'),
                 'gallery' => [
                     public_path('images/gallery3.jpg'),
                     public_path('images/gallery4.jpg'),
                 ],
             ],
+            [
+            'title' => 'لابتوب',
+            'description' => 'لابتوب حديث المواصفات',
+            'price' => 3000,
+            'currency' => 'SAR',
+            'stock' => 10,
+            'is_active' => 1,
+            'is_featured' => 1,
+            'featured' => public_path('images/featured3.jpg'),
+            'is_special' => true,
+            'colors' => json_encode(['#FF5733', '#1ABC9C']),
+            'gallery' => [
+                public_path('images/gallery5.jpg'),
+                public_path('images/gallery6.jpg'),
+            ],
+          ],
         ];
 
         foreach ($products as $item) {
@@ -54,6 +73,7 @@ class ProductSeeder extends Seeder
                 'stock' => $item['stock'],
                 'is_active' => $item['is_active'],
                 'is_featured' => $item['is_featured'],
+                'is_special' => $item['is_special'],
                 'colors' => $item['colors'],
             ]);
 
