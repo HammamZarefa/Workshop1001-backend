@@ -18,7 +18,8 @@ class ProductFactory extends Factory
             'stock' => $this->faker->numberBetween(1, 100),
             'is_active' => $this->faker->boolean(90),
             'is_featured' => $this->faker->boolean(30),
-            'colors' => ['red', 'blue', 'black'],
+            'is_special' => $this->faker->boolean,
+            'colors' => [$this->faker->hexColor],
         ];
     }
 }

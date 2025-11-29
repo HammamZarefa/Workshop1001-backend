@@ -23,6 +23,7 @@ class Product extends Model implements HasMedia
         'stock',
         'is_active',
         'is_featured',
+        'is_special',
         'colors',
     ];
 
@@ -30,13 +31,14 @@ class Product extends Model implements HasMedia
         'colors' => 'array',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
+        'is_special'=>'boolean',
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
-    
+
        protected static function booted()
     {
         static::addGlobalScope(new IsActiveScope);
@@ -44,16 +46,16 @@ class Product extends Model implements HasMedia
     public function registerMediaCollections(): void
 {
     $this
-        ->addMediaCollection('featured') 
+        ->addMediaCollection('featured')
         ->singleFile();
 
     $this
-        ->addMediaCollection('gallery'); 
+        ->addMediaCollection('gallery');
 }
     protected function price(): Attribute
     {
         return Attribute::make(
-            
+
             get: fn ($value) => $value / 100,
             set: fn ($value) => (int) round($value * 100)
         );

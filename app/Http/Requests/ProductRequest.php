@@ -21,6 +21,9 @@ class ProductRequest extends FormRequest
             'featured' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'gallery' => 'nullable',
             'gallery.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'colors' => 'nullable|array',
+            'colors.*' => 'regex:/^#[0-9A-Fa-f]{6}$/',
+            'is_special' => 'boolean',
         ];
     }
 }
