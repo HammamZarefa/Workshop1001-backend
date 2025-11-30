@@ -25,7 +25,7 @@ Route::post('/admin/login', [AuthController::class, 'login'])
 // ==============================
 // Admin Protected Area
 // ==============================
-Route::middleware(['auth', 'is_admin'])
+Route::middleware(['is_admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
