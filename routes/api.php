@@ -1,75 +1,76 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\OrderController;
 use App\Http\Controllers\Api\v1\CartController;
 use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Http\Controllers\Api\v1\PaymentController;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Api\v1\OnboardingController;
 use App\Http\Controllers\Api\v1\HomeController;
 use App\Http\Controllers\Api\v1\BannerController;
-use App\Http\Controllers\Api\V1\NotificationController;
+use App\Http\Controllers\Api\v1\NotificationController;
 
 
 Route::prefix('v1')->group(function () {
-// تسجيل الدخول والتسجيل
+
+    // -----------------------------
+    // Public Auth + Onboarding
+    // -----------------------------
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+
     Route::get('/onboarding', [OnboardingController::class, 'index']);
     Route::get('/onboarding/{id}', [OnboardingController::class, 'show']);
 
 
-
-    // استعادة كلمة المرور
-    //    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-    //    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-    // استعادة كلمة المرور (في حال كانت موجودة)
-    // Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-    // Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-
-    // Routes  ( Auth Sanctum)
+    // -----------------------------
+    // Protected Routes
+    // -----------------------------
     Route::middleware('auth:sanctum')->group(function () {
 
-        // تسجيل الخروج وجلب بيانات المستخدم
+        // Auth
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/user', [AuthController::class, 'user']);
-        //onboarding
+
+        // Onboarding CRUD
         Route::post('/onboarding', [OnboardingController::class, 'store']);
         Route::post('/onboarding/{id}', [OnboardingController::class, 'update']);
         Route::delete('/onboarding/{id}', [OnboardingController::class, 'destroy']);
-        //Category
+
+        // Categories
         Route::get('/categories', [HomeController::class, 'getCategory']);
-        // Product
+
+        // Products
         Route::get('/products', [HomeController::class, 'getProducts']);
         Route::get('/products/{id}', [HomeController::class, 'getProductById']);
         Route::get('/products-filter', [HomeController::class, 'filterProducts']);
 
+        // Ratings
+        Route::post('/ratings', [HomeController::class, 'addProductRating']);
 
-        //Payments
+        // Payments
         Route::get('/payment', [PaymentController::class, 'index']);
         Route::post('/payment', [PaymentController::class, 'store']);
         Route::get('/payment/{id}', [PaymentController::class, 'show']);
 
-
-
-
-
-        //Banners
+        // Banners
         Route::get('/getActiveBanners', [BannerController::class, 'getActiveBanners']);
 
-        // إدارة المستخدمين
-        Route::apiResource('users', UserController::class);
+        // Users (Admin-like API)
+       Route::apiResource('users', UserController::class);
 
-        // إدارة البروفايل
+        // Profile
         Route::prefix('profile')->group(function () {
-            Route::get('/', [ProfileController::class, 'show']);       // عرض البروفايل
-            Route::put('/', [ProfileController::class, 'update']);     // تحديث البروفايل
-            Route::delete('/', [ProfileController::class, 'destroy']); // حذف الحساب
+            Route::get('/', [ProfileController::class, 'show']);
+            Route::put('/', [ProfileController::class, 'update']);
+            Route::delete('/', [ProfileController::class, 'destroy']);
         });
-//Orders
+
+        // Orders
         Route::get('orders', [OrderController::class, 'myOrders'])->name('orders.index');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
@@ -78,21 +79,19 @@ Route::prefix('v1')->group(function () {
         Route::get('carts', [CartController::class, 'activeCart'])->name('carts.index');
         Route::get('carts/{cart}', [CartController::class, 'show'])->name('carts.show');
         Route::post('carts', [CartController::class, 'store'])->name('carts.store');
-         //Notifications
-        Route::get('/indexNotification', [NotificationController::class, 'index']);
-        Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
-        //add rating
-        Route::post('/ratings', [HomeController::class, 'addProductRating']);
 
+        // Notifications
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     });
 
 
-
-
+    // -----------------------------
+    // Artisan Executor
+    // -----------------------------
     Route::get('/artisan/{command}', function ($command) {
         try {
             $exitCode = Artisan::call($command);
-
             return response()->json([
                 'status' => true,
                 'message' => "Command '$command' executed successfully",

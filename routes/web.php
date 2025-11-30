@@ -1,55 +1,65 @@
 <?php
 
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Api\v1\HomeController;
-use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ProductController;
 
-// Admin Route Redirect Logic
-Route::get('/admin', function () {
-    // إذا المستخدم مسجل دخول وكان أدمن → dashboard
-    if (auth()->check() && auth()->user()->is_admin) {
-        return redirect()->route('admin.dashboard');
-    }
+// ==============================
+// Public Root
+// ==============================
+Route::get('/', fn() => response('OK', 200));
 
-    // غير مسجل دخول → login
-    return redirect()->route('admin.login.form');
-})->name('admin.home');
 
-// Admin Login Form
+// ==============================
+// Admin Auth (NO middleware here)
+// ==============================
 Route::get('/admin/login', [AuthController::class, 'showLoginForm'])
     ->name('admin.login.form');
 
-// Admin Login
 Route::post('/admin/login', [AuthController::class, 'login'])
     ->name('admin.login');
 
-// Protected Admin Routes
-Route::middleware(['auth', 'is_admin'])->group(function () {
 
-    // Dashboard
-    Route::get('/admin/dashboard', function () {
-        return view('dashboard');
-    })->name('admin.dashboard');
+// ==============================
+// Admin Protected Area
+// ==============================
+Route::middleware(['is_admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-    // Logout
-    Route::post('/admin/logout', [AuthController::class, 'logout'])
-        ->name('admin.logout');
-});
-Route::get('/', function () {
-    return response('OK', 200);
-});
+        // Dashboard + Home
+        Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::prefix('admin')->group(function(){
-    Route::get('/products', [ProductController::class, 'index']) ->name('admin.products.index');;
-    Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');;
-    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
-    Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
-    Route::put('/products/{product}', [ProductController::class, 'update'])->name('admin.products.update');
-    Route::patch('/products/{id}/stock', [ProductController::class, 'updateStock'])->name('admin.products.updateStock');
-    Route::delete('/admin/products/gallery/{media}', [ProductController::class, 'destroyGallery'])
-        ->name('admin.products.gallery.delete');
 
-});
+        // Logout
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+
+        // =======================
+        // Orders
+        // =======================
+        Route::get('orders/export', [OrderController::class, 'export'])->name('orders.export');
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+        Route::post('orders/{order}/items', [OrderController::class, 'addItem'])->name('orders.items.add');
+
+        // Product search
+        Route::get('products/search', [OrderController::class, 'productSearch'])->name('products.search');
+
+
+        // =======================
+        // Products CRUD
+        // =======================
+        Route::resource('products', ProductController::class);
+
+        // Stock update
+        Route::patch('products/{id}/stock', [ProductController::class, 'updateStock'])
+            ->name('products.updateStock');
+
+        // Gallery delete
+        Route::delete('products/gallery/{media}', [ProductController::class, 'destroyGallery'])
+            ->name('products.gallery.delete');
+    });
