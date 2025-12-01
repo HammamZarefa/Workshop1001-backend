@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
 
 // ==============================
 // Public Root
@@ -62,4 +63,47 @@ Route::middleware(['is_admin'])
         // Gallery delete
         Route::delete('products/gallery/{media}', [ProductController::class, 'destroyGallery'])
             ->name('products.gallery.delete');
+
+
+
+        // =======================
+        // Categories
+        // =======================
+
+    // عرض كل الcatigories (هرمية)
+    Route::get('/categories', [CategoryController::class, 'index'])
+        ->name('categories.index');
+
+    //عرض صفحة إنشاء catigory جديد
+    Route::get('/categories/create', [CategoryController::class, 'create'])
+    ->name('categories.create');
+
+    // عرض صفحة كاتيجوري معيّن
+    Route::get('/categories/{id}', [CategoryController::class, 'show'])
+        ->name('categories.show');
+
+
+    // إنشاء catigory جديد
+    Route::post('/categories', [CategoryController::class, 'store'])
+        ->name('categories.store');
+
+    // صفحة تعديل catigory
+    Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])
+        ->name('categories.edit');
+
+    // تحديث catigory
+    Route::put('/categories/{id}', [CategoryController::class, 'update'])
+        ->name('categories.update');
+
+    // حذف catigory
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])
+        ->name('categories.destroy');
+
+    // إعادة ترتيب  (Reorder)
+    Route::post('/categories/reorder', [CategoryController::class, 'reorder'])
+        ->name('categories.reorder');
+
+
+
+
     });
