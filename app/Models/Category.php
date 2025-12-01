@@ -11,7 +11,7 @@ class Category extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    protected $fillable = ['title', 'is_active'];
+    protected $fillable = ['title', 'is_active','parent_id','display_order'];
     protected $appends = ['icon'];
 
     public function registerMediaCollections(): void
@@ -28,5 +28,17 @@ class Category extends Model implements HasMedia
     {
         static::addGlobalScope(new IsActiveScope);
     }
+
+
+public function parent()
+{
+    return $this->belongsTo(Category::class, 'parent_id');
+}
+
+public function children()
+{
+    return $this->hasMany(Category::class, 'parent_id')->orderBy('display_order');
+}
+
 }
 

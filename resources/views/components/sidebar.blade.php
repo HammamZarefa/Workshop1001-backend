@@ -8,7 +8,11 @@
                 <i class="fas fa-shopping-cart mr-3"></i>
                 Orders
             </a>
-
+             <a href="{{ route('admin.categories.index') }}"
+           class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+            <i class="fas fa-tags mr-3"></i>
+            Categories
+        </a>
         </nav>
 
     </aside>
