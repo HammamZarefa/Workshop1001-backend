@@ -8,6 +8,11 @@
                 <i class="fas fa-shopping-cart mr-3"></i>
                 Orders
             </a>
+            <a href="<?php echo e(route('admin.products.index')); ?>" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                <i class="fas fa-box mr-3"></i>
+                Products
+            </a>
+
 
         </nav>
 

@@ -10,7 +10,9 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-
+use App\Http\Traits\MediaUploadTrait;
+use App\Http\Traits\MediaDeletionTrait;
+use App\Http\Traits\ModelSaveTrait;
 
 class ProductController extends Controller
 {
@@ -18,7 +20,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-
+    use MediaUploadTrait ,MediaDeletionTrait ,ModelSaveTrait;
     // index
     public function index()
     {
@@ -37,21 +39,8 @@ class ProductController extends Controller
     //store
     public function store(StoreProductRequest $request)
     {
-        $data = $request->validated();
-        $product = Product::create($data);
+        $this->saveModelData(Product::class, $request);
 
-        if ($request->hasFile('featured')) {
-            $product
-                ->addMediaFromRequest('featured')
-                ->toMediaCollection('featured');
-        }
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $image) {
-                $product
-                    ->addMedia($image)
-                    ->toMediaCollection('gallery');
-            }
-        }
         return redirect()->route('admin.products.index')->with('success', 'Created');
     }
 
@@ -66,24 +55,7 @@ class ProductController extends Controller
     // update
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
-
-        if ($request->hasFile('featured')) {
-
-            $product->clearMediaCollection('featured');
-
-
-            $product->addMediaFromRequest('featured')
-                ->toMediaCollection('featured');
-        }
-
-
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $image) {
-                $product->addMedia($image)
-                    ->toMediaCollection('gallery');
-            }
-        }
+        $this->saveModelData(Product::class, $request,  $product);
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Product updated successfully');
@@ -155,24 +127,13 @@ class ProductController extends Controller
         ->route('admin.products.index')
         ->with('success', 'Stock updated successfully');
 }
-
-    public function destroyGallery(Media $media)
+    public function destroyGallery($media)
     {
-        try {
-            $media->delete();
+        $result = $this->deleteMediaById($media);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Image deleted'
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Failed to delete media: '.$e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete image'
-            ], 500);
-        }
+        return response()->json($result, $result['success'] ? 200 : 500);
     }
+
 
 
 
