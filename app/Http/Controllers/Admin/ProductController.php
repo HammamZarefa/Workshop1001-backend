@@ -12,6 +12,7 @@ use App\Models\Category;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Http\Traits\MediaUploadTrait;
 use App\Http\Traits\MediaDeletionTrait;
+use App\Http\Traits\ModelSaveTrait;
 
 class ProductController extends Controller
 {
@@ -19,7 +20,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    use MediaUploadTrait ,MediaDeletionTrait;
+    use MediaUploadTrait ,MediaDeletionTrait ,ModelSaveTrait;
     // index
     public function index()
     {
@@ -38,12 +39,7 @@ class ProductController extends Controller
     //store
     public function store(StoreProductRequest $request)
     {
-        $data = $request->validated();
-        $product = Product::create($data);
-
-        $this->uploadSingleMedia($product, $request, 'featured','featured');
-
-        $this->uploadMultipleMedia($product, $request, 'gallery','gallery');
+        $this->saveModelData(Product::class, $request);
 
         return redirect()->route('admin.products.index')->with('success', 'Created');
     }
@@ -59,11 +55,7 @@ class ProductController extends Controller
     // update
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
-
-        $this->uploadSingleMedia($product, $request, 'featured', 'featured');
-
-        $this->uploadMultipleMedia($product, $request, 'gallery', 'gallery');
+        $this->saveModelData(Product::class, $request,  $product);
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Product updated successfully');
