@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\BannerController;
 
 // ==============================
 // Public Root
@@ -104,6 +105,11 @@ Route::middleware(['is_admin'])
         ->name('categories.reorder');
 
 
+        // =======================
+        // Banners
+        // =======================
+
+    Route::resource('banners',BannerController::class);
 
 
     });
