@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Banner;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BannerRequest;
 
 class BannerController extends Controller
 {
@@ -19,16 +20,9 @@ class BannerController extends Controller
         return view('admin.banners.create');
     }
 
-    public function store(Request $request)
+    public function store(BannerRequest $request)
     {
-        $data = $request->validate([
-            'title'       => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'link'        => 'nullable|string|max:255',
-            'sort_order'  => 'nullable|integer',
-            'is_active'   => 'nullable|boolean',
-            'image'       => 'nullable|image|max:2048',
-        ]);
+        $data = $request->validated();
 
         $banner = Banner::create($data);
 
