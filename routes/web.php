@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\BannerController;
 
 // ==============================
 // Public Root
@@ -103,6 +104,29 @@ Route::middleware(['is_admin'])
     Route::post('/categories/reorder', [CategoryController::class, 'reorder'])
         ->name('categories.reorder');
 
+
+        // =======================
+        // Banners
+        // =======================
+
+
+    Route::get('banners', [BannerController::class, 'index'])
+        ->name('banners.index');
+
+    Route::get('banners/create', [BannerController::class, 'create'])
+        ->name('banners.create');
+
+    Route::post('banners', [BannerController::class, 'store'])
+        ->name('banners.store');
+
+    Route::get('banners/{banner}/edit', [BannerController::class, 'edit'])
+        ->name('banners.edit');
+
+    Route::put('banners/{banner}', [BannerController::class, 'update'])
+        ->name('banners.update');
+
+    Route::delete('banners/{banner}', [BannerController::class, 'destroy'])
+        ->name('banners.destroy');
 
 
 

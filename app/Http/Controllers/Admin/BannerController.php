@@ -1,0 +1,77 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Models\Banner;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class BannerController extends Controller
+{
+    public function index()
+    {
+        $banners = Banner::withoutGlobalScope('is_active')->orderBy('sort_order')->get();
+        return view('admin.banners.index', compact('banners'));
+    }
+
+    public function create()
+    {
+        return view('admin.banners.create');
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'link'        => 'nullable|string|max:255',
+            'sort_order'  => 'nullable|integer',
+            'is_active'   => 'nullable|boolean',
+            'image'       => 'nullable|image|max:2048',
+        ]);
+
+        $banner = Banner::create($data);
+
+        if ($request->hasFile('image')) {
+            $banner->addMediaFromRequest('image')->toMediaCollection('banners');
+        }
+
+        return redirect()->route('admin.banners.index')
+            ->with('success', 'Banner Has Been Created Successfully');
+    }
+
+    public function edit(Banner $banner)
+    {
+        return view('admin.banners.edit', compact('banner'));
+    }
+
+    public function update(Request $request, Banner $banner)
+    {
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'link'        => 'nullable|string|max:255',
+            'sort_order'  => 'nullable|integer',
+            'is_active'   => 'nullable|boolean',
+            'image'       => 'nullable|image|max:2048',
+        ]);
+
+        $banner->update($data);
+
+        if ($request->hasFile('image')) {
+            $banner->clearMediaCollection('banners');
+            $banner->addMediaFromRequest('image')->toMediaCollection('banners');
+        }
+
+        return redirect()->route('admin.banners.index')
+            ->with('success', 'Banner Has Been Updated Successfully');
+    }
+
+    public function destroy(Banner $banner)
+    {
+        $banner->delete();
+
+        return redirect()->route('admin.banners.index')
+            ->with('success', 'Banner Has Been Deleted Successfully');
+    }
+}
