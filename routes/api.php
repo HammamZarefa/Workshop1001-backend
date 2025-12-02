@@ -68,6 +68,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/', [ProfileController::class, 'show']);
             Route::put('/', [ProfileController::class, 'update']);
             Route::delete('/', [ProfileController::class, 'destroy']);
+            Route::post('/upload-image', [ProfileController::class, 'uploadProfileImage']);
         });
 
         // Orders

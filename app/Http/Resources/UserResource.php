@@ -23,6 +23,8 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'address' => $this->address,
+            'profile_image' => $this->getFirstMediaUrl('avatars'),
+
         ];
     }
 }

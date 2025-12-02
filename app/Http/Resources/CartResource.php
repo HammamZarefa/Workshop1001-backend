@@ -14,6 +14,8 @@ class CartResource extends JsonResource
             'items' => CartItemResource::collection($this->items),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'total' => $this->items->sum(fn($item) => $item->price * $item->quantity),
+
         ];
     }
 }

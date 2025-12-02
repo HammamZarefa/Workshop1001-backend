@@ -23,11 +23,10 @@ class OrderController extends ApiController
             ->latest()
             ->paginate($perPage);
         return $this->success(
-            OrderResource::collection($orders),
-            'Orders fetched',
-            200,
-            $this->paginationMeta($orders)
-        );
+        'Orders fetched',                     // الرسالة
+        OrderResource::collection($orders),   // البيانات
+        200
+    );
     }
 
 
@@ -36,10 +35,10 @@ class OrderController extends ApiController
         $order = Order::with('items.product', 'user')->find($id);
 
         if (!$order) {
-            return $this->error('Order not found', [], 404);
+            return $this->error('Order not found', 404);
         }
         if ($order->user_id !== auth()->id()) {
-            return $this->error('Unauthorized', [], 403);
+            return $this->error('Unauthorized', 403);
         }
 
         return $this->ok('Order fetched', new OrderResource($order));

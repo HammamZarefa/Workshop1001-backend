@@ -7,9 +7,12 @@ use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Traits\MediaUploadTrait;
+
 
 class ProfileController extends Controller
 {
+    use MediaUploadTrait;
     public function show(Request $request)
     {
         return new UserResource($request->user());
@@ -32,4 +35,29 @@ class ProfileController extends Controller
 
         return response()->json(['message' => 'User deleted']);
     }
+    public function uploadProfileImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|max:2048'
+        ]);
+
+        $user = auth()->user();
+
+        $this->uploadSingleMedia(
+            $user,
+            $request,
+            'image',
+            'avatars'
+        );
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Profile image updated',
+            'data' => [
+                'profile_image' => $user->getFirstMediaUrl('avatars')
+            ]
+        ]);
+    }
+
+
 }
