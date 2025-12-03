@@ -24,6 +24,7 @@ class CartController extends ApiController
 
     public function activeCart(Request $request)
     {
+
         $cart = $this->getUserCart();
         if ($cart instanceof JsonResponse) return $cart;
 
@@ -52,7 +53,7 @@ class CartController extends ApiController
         $cart = DB::transaction(function () use ($data) {
 
 
-            $cart = Cart::with(['items.product:id,name,price'])
+            $cart = Cart::with(['items.product:id,title,price'])
                 ->where('user_id', auth()->id())
                 ->where('status', 'pending')
                 ->first();
@@ -82,7 +83,7 @@ class CartController extends ApiController
 
                 if (isset($item['price']) && $item['price'] != $product->price) {
                     throw ValidationException::withMessages([
-                        "items.$index.price" => "Invalid price for product {$product->name}"
+                        "items.$index.price" => "Invalid price for product {$product->title}"
                     ]);
                 }
 
@@ -100,7 +101,7 @@ class CartController extends ApiController
                 ['quantity', 'price']
             );
 
-            return $cart->load('items.product:id,name,price');
+            return $cart->load('items.product:id,title,price');
         });
 
         $coupon = $request->get('coupon_code')
@@ -123,7 +124,7 @@ class CartController extends ApiController
 
     private function getUserCart(): Cart|JsonResponse
     {
-        $cart = Cart::with(['items.product:id,name,price'])
+        $cart = Cart::with(['items.product:id,title,price'])
             ->where('user_id', auth()->id())
             ->where('status', 'pending')
             ->latest()

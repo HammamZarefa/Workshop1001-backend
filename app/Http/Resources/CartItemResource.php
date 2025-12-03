@@ -13,8 +13,8 @@ class CartItemResource extends JsonResource
             'id'        => $this->id,
             'product'   => [
                 'id'    => $product->id ?? null,
-                'name'  => $product->name ?? null,
-                'image' => $product ? ($product->getFirstMediaUrl('images') ?? null) : null,
+                'title'  => $product->title ?? null,
+                'image' => $product?->getFirstMediaUrl('featured')
             ],
             'price'     => $this->price,
             'quantity'  => $this->quantity,

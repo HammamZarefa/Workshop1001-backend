@@ -37,7 +37,10 @@ class ProductResource extends JsonResource
                     'url' => $media->getUrl(),
                 ];
             }),
-            'average_rating' => round($this->ratings()->avg('rating'), 1),
+            'average_rating' => $this->ratings()->exists()
+                ? round($this->ratings()->avg('rating'), 1)
+                : null,
+
 
 
         ];
