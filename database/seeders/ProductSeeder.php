@@ -22,7 +22,7 @@ class ProductSeeder extends Seeder
 
                 'featured' => public_path('images/featured.jpg'),
                 'is_special' => true,
-                'colors' => json_encode(['#FF5733', '#1ABC9C']),
+                'colors' => ['#FF5733', '#1ABC9C'],
                 'gallery' => [
                     public_path('images/gallery1.jpg'),
                     public_path('images/gallery2.jpg'),
