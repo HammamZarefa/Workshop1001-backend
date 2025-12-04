@@ -47,7 +47,8 @@ Route::middleware(['is_admin'])
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::post('orders/{order}/items', [OrderController::class, 'addItem'])->name('orders.items.add');
-
+        Route::post('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status.update');
+        Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
         // Product search
         Route::get('products/search', [OrderController::class, 'productSearch'])->name('products.search');
 

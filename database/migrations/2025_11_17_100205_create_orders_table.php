@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->decimal('coupon_value', 10, 2)->default(0);
             $table->string('shipping_address');
-            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'processing','shipped','delivered', 'cancelled'])->default('pending');
             $table->decimal('tax_amount', 10, 2)->default(0);
             $table->decimal('discount_percentage', 5, 2)->default(0);
             $table->char('currency', 3)->default('USD');
