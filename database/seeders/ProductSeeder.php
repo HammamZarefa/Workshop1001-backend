@@ -37,7 +37,7 @@ class ProductSeeder extends Seeder
                 'is_active' => 1,
                 'is_featured' => 0,
                 'is_special' => true,
-                'colors' => json_encode(['#FF5733', '#1ABC9C']),
+                'colors' =>['#FF5733', '#1ABC9C'],
                 'featured' => public_path('images/featured2.jpg'),
                 'gallery' => [
                     public_path('images/gallery3.jpg'),
@@ -54,7 +54,7 @@ class ProductSeeder extends Seeder
             'is_featured' => 1,
             'featured' => public_path('images/featured3.jpg'),
             'is_special' => true,
-            'colors' => json_encode(['#FF5733', '#1ABC9C']),
+            'colors' =>['#FF5733', '#1ABC9C'],
             'gallery' => [
                 public_path('images/gallery5.jpg'),
                 public_path('images/gallery6.jpg'),
