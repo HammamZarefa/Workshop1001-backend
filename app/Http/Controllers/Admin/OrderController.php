@@ -174,7 +174,7 @@ public function updateStatus(Request $request, Order $order)
         ]);
 
         // SEND MAIL NOTIFICATION
-        if ($order->user) {
+     if ($order->user) {
             $order->user->notify(new OrderStatusChanged(
                 $order,
                 $oldStatus,
@@ -204,9 +204,21 @@ public function cancel(Order $order, Request $request)
         ]);
 
         // REFUND PAYMENT (ONLY IF WAS PAID)
-        if ($order->payment && $order->payment->status === 'paid') {
-            $order->payment->markAsRefunded($reason);
-        }
+      $payment = $order->payment;
+
+if ($payment && $payment->status === 'paid') {
+
+    if (method_exists($payment, 'markAsRefunded')) {
+        $payment->markAsRefunded($reason);
+    } else {
+        $payment->update([
+            'status' => 'refunded',
+            'refund_reason' => $reason,
+            'refunded_at' => now(),
+        ]);
+    }
+
+}
 
       OrderStatusLog::create([
             'order_id'   => $order->id,
