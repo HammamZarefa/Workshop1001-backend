@@ -32,4 +32,15 @@ class Payment extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+     public function markAsRefunded(?string $reason = null)
+    {
+        $this->update([
+            'status' => 'refunded',
+            'meta' => array_merge($this->meta ?? [], [
+                'refund_reason' => $reason,
+                'refunded_at'   => now(),
+            ]),
+        ]);
+    }
 }
