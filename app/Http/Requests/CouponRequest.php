@@ -12,7 +12,8 @@ class CouponRequest extends FormRequest
         return true;
     }
 
-      protected function prepareForValidation()
+
+    protected function prepareForValidation()
     {
         if (!$this->has('start_date') || empty($this->start_date)) {
             $this->merge([
@@ -20,6 +21,7 @@ class CouponRequest extends FormRequest
             ]);
         }
     }
+
     public function rules(): array
     {
         return [
@@ -30,7 +32,7 @@ class CouponRequest extends FormRequest
             'min_order_amount' => 'nullable|numeric|min:0',
             'usage_limit' => 'nullable|integer|min:1',
             'usage_limit_per_user' => 'nullable|integer|min:1',
-            'start_date' => 'nullable|date',
+            'start_date' => 'sometimes|date',
             'expiration_date' => 'nullable|date|after_or_equal:start_date',
         ];
     }

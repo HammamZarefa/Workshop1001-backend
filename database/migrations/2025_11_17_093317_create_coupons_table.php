@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->unsignedInteger('usage_limit')->nullable();
             $table->unsignedInteger('usage_limit_per_user')->nullable();
 
-           $table->dateTime('start_date')->nullable();
+            $table->dateTime('start_date')->useCurrent();
             $table->dateTime('expiration_date')->nullable();
 
             $table->timestamps();

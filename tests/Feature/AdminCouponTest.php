@@ -48,6 +48,32 @@ class AdminCouponTest extends TestCase
         $this->assertDatabaseHas('coupons', ['code' => 'NEWCODE']);
     }
 
+    public function test_cannot_update_coupon_to_duplicate_code()
+    {
+        $couponA = Coupon::factory()->create(['code' => 'DUPLICATE']);
+        $couponB = Coupon::factory()->create(['code' => 'ORIG']);
+
+        $response = $this->from(route('admin.coupons.edit', $couponB->id))
+            ->put(route('admin.coupons.update', $couponB->id), [
+                'name' => 'Attempt Duplicate',
+                'code' => 'DUPLICATE',
+            ]);
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'success' => false,
+            'message' => 'Validation error',
+            'errors' => [
+                'code' => ['The code has already been taken.'],
+            ],
+        ]);
+
+        $this->assertDatabaseHas('coupons', [
+            'id' => $couponB->id,
+            'code' => 'ORIG',
+        ]);
+    }
+
     public function test_can_delete_coupon()
     {
         $coupon = Coupon::factory()->create();
