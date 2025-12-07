@@ -12,6 +12,14 @@ class CouponRequest extends FormRequest
         return true;
     }
 
+      protected function prepareForValidation()
+    {
+        if (!$this->has('start_date') || empty($this->start_date)) {
+            $this->merge([
+                'start_date' => now()->toDateTimeString(),
+            ]);
+        }
+    }
     public function rules(): array
     {
         return [
