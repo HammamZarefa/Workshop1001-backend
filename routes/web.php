@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\CouponController;
 
 // ==============================
 // Public Root
@@ -112,5 +113,10 @@ Route::middleware(['is_admin'])
 
     Route::resource('banners',BannerController::class);
 
+     // =======================
+        // Coupons
+        // =======================
 
+    Route::resource('coupons',CouponController::class);
+    
     });
