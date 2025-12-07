@@ -6,17 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
+use App\Models\Role;
+use http\Client\Curl\User;
 
 class PermissionController extends Controller
 {
     public function index()
     {
+        $this->u('viewAny');
         $permissions=Permission::paginate(10);
         return view('admin.permissions.index', compact('permissions'));
     }
 
     public function create()
     {
+        $this->authorize('viewAny');
         return view('admin.permissions.create');
     }
 

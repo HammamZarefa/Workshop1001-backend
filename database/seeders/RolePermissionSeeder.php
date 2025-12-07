@@ -27,6 +27,9 @@ class RolePermissionSeeder extends Seeder
             // Banners
             'view_banners', 'create_banners', 'edit_banners', 'delete_banners',
 
+            // Role
+            'view_roles', 'create_roles', 'edit_roles', 'delete_roles',
+
 
         ];
 
@@ -92,18 +95,21 @@ class RolePermissionSeeder extends Seeder
 
         foreach ($demoUsers as $email => $roleName) {
 
-            $user = User::firstOrCreate(
+            $user = User::updateOrCreate(
                 ['email' => $email],
                 [
-                    'name' => ucfirst(str_replace('@example.com', '', $email)),
-                    'password' => Hash::make('password123'),
-                    'is_admin' => $roleName === 'admin',
+                    'first_name' => 'Lina',
+                    'last_name' => 'Abdullah',
+                    'password' => 'password123',
+                    'is_admin' => true,
+                    'is_active' => true
 
                 ]
             );
 
             $role = Role::where('name', $roleName)->first();
-            $user->roles()->syncWithoutDetaching([$role->id]);
+            $user->role()->associate($role);
+            $user->save();
         }
 
         echo "Seeder completed successfully!\n";

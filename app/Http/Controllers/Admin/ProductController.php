@@ -24,6 +24,8 @@ class ProductController extends Controller
     // index
     public function index()
     {
+       if(!in_array('view_products' , auth()->user()->role->permissions) )
+           abort(403);
         $products = Product::orderBy('created_at','desc')->paginate(15);
         return view('admin.products.index', compact('products'));
     }

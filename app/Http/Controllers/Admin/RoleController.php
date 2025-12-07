@@ -10,8 +10,6 @@ use Illuminate\Http\Request;
 use App\Models\Permission;
 
 
-
-
 class RoleController extends Controller
 {
     /**
@@ -19,9 +17,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny', Role::class);
-        $roles=Role::paginate(10);
-        return view('admin.roles.index',compact('roles'));
+        $roles = Role::paginate(10);
+        return view('admin.roles.index', compact('roles'));
     }
 
     /**
@@ -81,7 +78,6 @@ class RoleController extends Controller
     }
 
 
-
     /**
      * Remove the specified resource from storage.
      */
@@ -90,12 +86,7 @@ class RoleController extends Controller
         $this->authorize('delete', $role);
         $role->delete();
 
-        return redirect()->route('admin.roles.index')->with('success','Roles deleted successfully');
-
-    }
-    public function authorize($ability, $model)
-    {
-        $this->authorize($ability, $model);
+        return redirect()->route('admin.roles.index')->with('success', 'Roles deleted successfully');
 
     }
 }
