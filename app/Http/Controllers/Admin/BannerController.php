@@ -39,16 +39,9 @@ class BannerController extends Controller
         return view('admin.banners.edit', compact('banner'));
     }
 
-    public function update(Request $request, Banner $banner)
+    public function update(BannerRequest $request, Banner $banner)
     {
-        $data = $request->validate([
-            'title'       => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'link'        => 'nullable|string|max:255',
-            'sort_order'  => 'nullable|integer',
-            'is_active'   => 'nullable|boolean',
-            'image'       => 'nullable|image|max:2048',
-        ]);
+        $data = $request->validated();
 
         $banner->update($data);
 
