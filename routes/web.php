@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
 
 // ==============================
 // Public Root
@@ -110,6 +112,19 @@ Route::middleware(['is_admin'])
         // =======================
 
     Route::resource('banners',BannerController::class);
+
+    //roles
+    Route::resource('roles', RoleController::class);
+
+    //permissions
+    Route::resource('permissions', PermissionController::class);
+
+
+
+
+
+
+
 
 
     });

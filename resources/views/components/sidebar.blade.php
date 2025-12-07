@@ -22,6 +22,18 @@
               <i class="fas fa-image mr-3"></i>
               Banners
         </a>
+            <a href="{{ route('admin.roles.index') }}"
+               class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                <i class="fas fa-users mr-3"></i>
+                Roles
+            </a>
+            <a href="{{ route('admin.permissions.index') }}"
+               class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                <i class="fas fa-lock mr-3"></i>
+                Permissions
+            </a>
+
+
         </nav>
 
     </aside>

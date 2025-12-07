@@ -74,6 +74,20 @@ class User extends Authenticatable implements HasMedia
 {
     return $this->hasMany(Rating::class);
 }
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 
+    public function hasRole(string $roleName): bool
+    {
+        return $this->role && $this->role->name === $roleName;
+    }
+
+
+    public function hasPermission(string $permissionName): bool
+    {
+        return $this->role && $this->role->hasPermission($permissionName);
+    }
 
 }
