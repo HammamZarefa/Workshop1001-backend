@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -69,61 +72,48 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logged out successfully.']);
     }
+
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    {
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return response()->json([
+            'message' => 'If an account exists, a reset link has been sent to this email.'
+        ], 200);
+
+    }
+
+
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
+    {
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+
+                $user->forceFill([
+                    'password' => $password,
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                event(new PasswordReset($user));
+
+                if (method_exists($user, 'tokens')) {
+                    $user->tokens()->delete();
+                }
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return response()->json([
+                'message' => 'Your password has been reset successfully.'
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'This password reset token is invalid or has expired.'
+        ], 422);
+    }
+
 }
-//
-//    public function forgotPassword(Request $request)
-//    {
-//        $request->validate(['email' => 'required|email']);
-//
-//        $user = User::where('email', $request->email)->first();
-//
-//
-//        if (!$user) {
-//            return response()->json([
-//                'message' => 'No user found with this email.'
-//            ], 404);
-//        }
-//
-//        // إرسال رابط إعادة التعيين
-//        $status = Password::sendResetLink(['email' => $request->email]);
-//
-//        if ($status === Password::RESET_LINK_SENT) {
-//            return response()->json(['message' => __($status)]);
-//        }
-//
-//        return response()->json([
-//            'message' => __($status),
-//        ], 422);
-//    }
-//
-//
-//    public function resetPassword(Request $request)
-//    {
-//        $request->validate([
-//            'token' => 'required',
-//            'email' => 'required|email',
-//            'password' => 'required|min:8|confirmed',
-//        ]);
-//
-//        $status = Password::reset(
-//            $request->only('email', 'password', 'password_confirmation', 'token'),
-//            function (User $user, string $password) {
-//                $user->forceFill([
-//                    'password' => Hash::make($password),
-//                    'remember_token' => Str::random(60),
-//                ])->save();
-//
-//                event(new PasswordReset($user));
-//            }
-//        );
-//
-//        if ($status === Password::PASSWORD_RESET) {
-//            return response()->json(['message' => __($status)]);
-//        }
-//
-//        return response()->json([
-//            'message' => __($status),
-//        ], 422);
-//    }
-//}
-//

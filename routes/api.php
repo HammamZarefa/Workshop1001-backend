@@ -22,6 +22,8 @@ Route::prefix('v1')->group(function () {
     // -----------------------------
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:6,1');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:6,1');
 
     Route::get('/onboarding', [OnboardingController::class, 'index']);
     Route::get('/onboarding/{id}', [OnboardingController::class, 'show']);
