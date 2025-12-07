@@ -28,3 +28,4 @@ class UpdateCouponRequest extends FormRequest
         ];
     }
 }
+
