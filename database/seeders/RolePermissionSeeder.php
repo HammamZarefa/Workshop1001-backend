@@ -26,6 +26,8 @@ class RolePermissionSeeder extends Seeder
 
             // Banners
             'view_banners', 'create_banners', 'edit_banners', 'delete_banners',
+
+
         ];
 
         foreach ($permissions as $p) {
@@ -95,6 +97,8 @@ class RolePermissionSeeder extends Seeder
                 [
                     'name' => ucfirst(str_replace('@example.com', '', $email)),
                     'password' => Hash::make('password123'),
+                    'is_admin' => $roleName === 'admin',
+
                 ]
             );
 

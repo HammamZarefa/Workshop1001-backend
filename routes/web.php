@@ -120,11 +120,4 @@ Route::middleware(['is_admin'])
     Route::resource('permissions', PermissionController::class);
 
 
-
-
-
-
-
-
-
     });

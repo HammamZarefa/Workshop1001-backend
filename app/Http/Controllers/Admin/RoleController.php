@@ -93,4 +93,9 @@ class RoleController extends Controller
         return redirect()->route('admin.roles.index')->with('success','Roles deleted successfully');
 
     }
+    public function authorize($ability, $model)
+    {
+        $this->authorize($ability, $model);
+
+    }
 }
