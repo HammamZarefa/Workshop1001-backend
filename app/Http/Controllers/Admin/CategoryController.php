@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Http\Requests\CategoryRequest;
+
 
 
 class CategoryController extends Controller
@@ -30,20 +32,14 @@ class CategoryController extends Controller
 // عرض نموذج إنشاء تصنيف جديد
 public function create()
 {
-    $categories = Category::all(); 
+    $categories = Category::all();
     return view('admin.categories.create', compact('categories'));
 }
 
     // إنشاء كاتيجوري جديد
-   public function store(Request $request)
+   public function store(CategoryRequest $request)
 {
-    $data = $request->validate([
-        'title' => 'required|string',
-        'parent_id' => 'nullable|exists:categories,id',
-        'is_active' => 'nullable|boolean',
-        'image_file' => 'nullable|image|max:2048',
-        'image_url'  => 'nullable|url',
-    ]);
+     $data = $request->validated();
 
     $category = Category::create($data);
 
@@ -72,15 +68,9 @@ public function edit($id)
 }
 
     // تعديل كانيجوري
-   public function update(Request $request, $id)
+   public function update(CategoryRequest $request, $id)
 {
-    $data = $request->validate([
-        'title' => 'required|string',
-        'parent_id' => 'nullable|exists:categories,id',
-        'is_active' => 'nullable|boolean',
-        'image_file' => 'nullable|image|max:2048',
-        'image_url'  => 'nullable|url',
-    ]);
+    $data = $request->validated();
 
     $category = Category::findOrFail($id);
     $category->update($data);
