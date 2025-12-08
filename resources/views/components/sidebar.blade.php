@@ -21,19 +21,25 @@
             class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
               <i class="fas fa-image mr-3"></i>
               Banners
-        </a>
+            </a>
             <a href="{{ route('admin.roles.index') }}"
                class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <i class="fas fa-users mr-3"></i>
                 Roles
             </a>
+
             <a href="{{ route('admin.permissions.index') }}"
                class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <i class="fas fa-lock mr-3"></i>
                 Permissions
             </a>
 
-
+            <a href="{{ route('admin.coupons.index') }}"
+               class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                <i class="fas fa-ticket-alt mr-3"></i>
+                Coupons
+            </a>
         </nav>
 
-    </aside>
+
+ </aside>

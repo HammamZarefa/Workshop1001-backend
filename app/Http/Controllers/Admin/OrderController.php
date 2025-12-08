@@ -9,6 +9,8 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Models\OrderStatusLog;
+use App\Notifications\OrderStatusChanged;
 
 class OrderController extends Controller
 {
@@ -139,4 +141,102 @@ class OrderController extends Controller
 
         return response()->json($results);
     }
+
+public function updateStatus(Request $request, Order $order)
+{
+    $request->validate([
+        'status' => 'required|string',
+    ]);
+
+    $newStatus = $request->status;
+    $oldStatus = $order->status;
+
+    // workflow
+    $allowed = [
+        'pending'    => ['processing'],
+        'processing' => ['shipped'],
+        'shipped'    => ['delivered'],
+    ];
+
+    if (!isset($allowed[$oldStatus]) || !in_array($newStatus, $allowed[$oldStatus])) {
+        return back()->withErrors(['status' => 'Invalid status transition.']);
+    }
+
+    DB::transaction(function () use ($order, $oldStatus, $newStatus) {
+
+        $order->update(['status' => $newStatus]);
+
+        OrderStatusLog::create([
+            'order_id' => $order->id,
+            'old_status' => $oldStatus,
+            'new_status' => $newStatus,
+            'admin_id' => auth()->id(),
+        ]);
+
+        // SEND MAIL NOTIFICATION
+     if ($order->user) {
+            $order->user->notify(new OrderStatusChanged(
+                $order,
+                $oldStatus,
+                $newStatus
+            ));
+        }
+    });
+
+    return back()->with('success', 'Order status updated.');
+}
+
+
+public function cancel(Order $order, Request $request)
+{
+    if ($order->status === 'cancelled' || $order->status === 'delivered') {
+        return back()->withErrors(['error' => 'Cannot cancel this order.']);
+    }
+
+    $reason = $request->reason ?? 'No reason provided';
+
+    DB::transaction(function () use ($order, $reason) {
+
+        $oldStatus = $order->status;
+
+        $order->update([
+            'status' => 'cancelled'
+        ]);
+
+        // REFUND PAYMENT (ONLY IF WAS PAID)
+      $payment = $order->payment;
+
+if ($payment && $payment->status === 'paid') {
+
+    if (method_exists($payment, 'markAsRefunded')) {
+        $payment->markAsRefunded($reason);
+    } else {
+        $payment->update([
+            'status' => 'refunded',
+            'refund_reason' => $reason,
+            'refunded_at' => now(),
+        ]);
+    }
+
+}
+
+      OrderStatusLog::create([
+            'order_id'   => $order->id,
+            'old_status' => $oldStatus,
+            'new_status' => 'cancelled',
+            'admin_id'   => auth()->id(),
+        ]);
+
+
+        if ($order->user) {
+            $order->user->notify(new OrderStatusChanged(
+                $order,
+                $oldStatus,
+                'cancelled'
+            ));
+        }
+    });
+
+    return back()->with('success', 'Order cancelled successfully.');
+}
 }

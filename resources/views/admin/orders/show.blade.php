@@ -95,6 +95,25 @@
             </div>
         @endif
     </div>
+    <div class="mt-4 flex gap-2">
+    <form method="POST" action="{{ route('admin.orders.status.update', $order->id) }}">
+        @csrf
+        <select name="status" class="border rounded p-2">
+            @foreach(\App\Models\Order::allowedStatuses() as $status)
+                @if($order->status !== $status)
+                    <option value="{{ $status }}">{{ ucfirst($status) }}</option>
+                @endif
+            @endforeach
+        </select>
+        <button type="submit" class="px-3 py-2 bg-green-600 text-white rounded">Update Status</button>
+    </form>
+
+    <form method="POST" action="{{ route('admin.orders.cancel', $order->id) }}">
+        @csrf
+        <input type="text" name="reason" placeholder="Cancel reason" class="border rounded p-2">
+        <button type="submit" class="px-3 py-2 bg-red-600 text-white rounded">Cancel Order</button>
+    </form>
+</div>
 
     @push('scripts')
     <script>

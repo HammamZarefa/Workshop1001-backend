@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Arr;
 
 class Order extends Model
 {
@@ -45,4 +46,37 @@ class Order extends Model
     {
         return $this->hasOne(Payment::class);
     }
+
+
+
+    public function logs()
+    {
+        return $this->hasMany(OrderStatusLog::class)->orderBy('created_at', 'desc');
+    }
+
+    public static function allowedStatuses(): array
+    {
+        return ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    }
+
+    public static function statusTransitions(): array
+    {
+        return [
+            'pending'    => ['processing', 'cancelled'],
+            'processing' => ['shipped', 'cancelled'],
+            'shipped'    => ['delivered'],
+            'delivered'  => [],
+            'cancelled'  => [],
+        ];
+    }
+
+    public function canTransitionTo(string $new): bool
+    {
+        $current = $this->status;
+        $map = static::statusTransitions();
+        if (!array_key_exists($current, $map)) return false;
+        return in_array($new, $map[$current], true);
+    }
+
+
 }
