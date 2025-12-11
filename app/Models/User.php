@@ -10,10 +10,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use App\Http\Traits\HasPermissions;
+use App\Http\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, Notifiable, InteractsWithMedia, HasApiTokens;
+    use HasFactory, Notifiable, InteractsWithMedia, HasApiTokens ,HasPermissions ,HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -74,20 +76,6 @@ class User extends Authenticatable implements HasMedia
 {
     return $this->hasMany(Rating::class);
 }
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
 
-    public function hasRole(string $roleName): bool
-    {
-        return $this->role && $this->role->name === $roleName;
-    }
-
-
-    public function hasPermission(string $permissionName): bool
-    {
-        return $this->role && $this->role->hasPermission($permissionName);
-    }
 
 }

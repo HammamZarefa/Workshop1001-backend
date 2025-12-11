@@ -9,139 +9,112 @@ use App\Http\Requests\StockUpdateRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Http\Traits\MediaUploadTrait;
 use App\Http\Traits\MediaDeletionTrait;
 use App\Http\Traits\ModelSaveTrait;
 
 class ProductController extends Controller
 {
+    use MediaUploadTrait, MediaDeletionTrait, ModelSaveTrait;
 
-    /**
-     * Display a listing of the resource.
-     */
-    use MediaUploadTrait ,MediaDeletionTrait ,ModelSaveTrait;
+    public function __construct()
+    {
+        $this->authorizeResource(Product::class, 'product');
+    }
+
     // index
     public function index()
     {
-        $products = Product::orderBy('created_at','desc')->paginate(15);
+        $products = Product::orderBy('created_at', 'desc')->paginate(15);
         return view('admin.products.index', compact('products'));
     }
 
     // create
     public function create()
     {
-    $categories = Category::all();
-    return view('admin.products.create', compact('categories'));
+        $categories = Category::all();
+        return view('admin.products.create', compact('categories'));
     }
 
-
-    //store
+    // store
     public function store(StoreProductRequest $request)
     {
         $this->saveModelData(Product::class, $request);
 
-        return redirect()->route('admin.products.index')->with('success', 'Created');
+        return redirect()
+            ->route('admin.products.index')
+            ->with('success', 'Created');
     }
 
-
     // edit
-   public function edit(Product $product)
-{
-    $categories = Category::all();
-    return view('admin.products.edit', compact('product', 'categories'));
-}
+    public function edit(Product $product)
+    {
+        $categories = Category::all();
+        return view('admin.products.edit', compact('product', 'categories'));
+    }
 
     // update
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $this->saveModelData(Product::class, $request,  $product);
+        $this->saveModelData(Product::class, $request, $product);
 
-        return redirect()->route('admin.products.index')
+        return redirect()
+            ->route('admin.products.index')
             ->with('success', 'Product updated successfully');
     }
 
+    // destroy
+    public function destroy(Product $product)
+    {
+        // حذف الصور
+        if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {
+            unlink(public_path('uploads/products/' . $product->image));
+        }
 
-    // soft delete
-    public function destroy($id)
-{
-    $product = Product::find($id);
-
-    if (!$product) {
-        return response()->json([
-            'success' => false,
-            'message' => 'product not found'
-        ], 404);
-    }
-
-
-    if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {
-        unlink(public_path('uploads/products/' . $product->image));
-    }
-
-
-    if ($product->gallery) {
-        foreach ($product->gallery as $img) {
-            if (file_exists(public_path('uploads/products/gallery/' . $img))) {
-                unlink(public_path('uploads/products/gallery/' . $img));
+        if ($product->gallery) {
+            foreach ($product->gallery as $img) {
+                if (file_exists(public_path('uploads/products/gallery/' . $img))) {
+                    unlink(public_path('uploads/products/gallery/' . $img));
+                }
             }
         }
+
+        $product->delete();
+
+        return redirect()
+            ->route('admin.products.index')
+            ->with('success', 'The product was successfully deleted');
     }
 
+    // update stock
+    public function updateStock(StockUpdateRequest $request, Product $product)
+    {
+        $this->authorize('update', $product);
 
-    $product->delete();
+        $data = $request->validated();
 
-    return redirect()
-        ->route('admin.products.index')
-        ->with('success', 'The product was successfully deleted');
-}
-    //update Stock
-   public function updateStock(StockUpdateRequest $request, $id)
-{
-    $product = Product::find($id);
+        if (isset($data['delta'])) {
+            $product->stock += $data['delta'];
+        }
 
-    if (!$product) {
-        return response()->json([
-            'success' => false,
-            'message' => 'product not found'
-        ], 404);
+        if (isset($data['stock'])) {
+            $product->stock = $data['stock'];
+        }
+
+        if ($product->stock < 0) {
+            $product->stock = 0;
+        }
+
+        $product->save();
+
+        return redirect()
+            ->route('admin.products.index')
+            ->with('success', 'Stock updated successfully');
     }
 
-    $data = $request->validated();
-
-    if (isset($data['delta'])) {
-        $product->stock += $data['delta'];
-    }
-
-    if (isset($data['stock'])) {
-        $product->stock = $data['stock'];
-    }
-
-    if ($product->stock < 0) {
-        $product->stock = 0;
-    }
-
-    $product->save();
-
-    return redirect()
-        ->route('admin.products.index')
-        ->with('success', 'Stock updated successfully');
-}
     public function destroyGallery($media)
     {
         $result = $this->deleteMediaById($media);
-
         return response()->json($result, $result['success'] ? 200 : 500);
     }
-
-
-
-
-
-
-
-
-
-
-
 }

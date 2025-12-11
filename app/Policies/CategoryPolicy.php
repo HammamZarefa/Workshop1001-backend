@@ -2,26 +2,26 @@
 
 namespace App\Policies;
 
-use App\Models\Permission;
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class PermissionPolicy
+class CategoryPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('view_permissions');
+        return $user->hasPermission('view_categories');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Permission $permission): bool
+    public function view(User $user, Category $category): bool
     {
-        return $user->hasPermission('view_permissions');
+        return $user->hasPermission('view_categories');
     }
 
     /**
@@ -29,23 +29,23 @@ class PermissionPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermission('create_permissions');
+        return $user->hasPermission('create_categories');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Permission $permission): bool
+    public function update(User $user, Category $category): bool
     {
-        return $user->hasPermission('edit_permissions');
+        return $user->hasPermission('update_categories');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Permission $permission): bool
+    public function delete(User $user, Category $category): bool
     {
-        return $user->hasPermission('delete_permissions');
+        return $user->hasPermission('delete_categories');
     }
 
 }

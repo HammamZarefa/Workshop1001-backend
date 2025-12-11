@@ -19,27 +19,27 @@ class RolePolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('roles.index');
+        return $user->hasPermission('view_roles');
     }
 
     public function view(User $user, Role $role): bool
     {
-        return $user->hasPermission('roles.index');
+        return $user->hasPermission('view_roles');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermission('roles.create');
+        return $user->hasPermission('create_roles');
     }
 
     public function update(User $user, Role $role): bool
     {
-        return $user->hasPermission('roles.update');
+        return $user->hasPermission('edit_roles');
     }
 
     public function delete(User $user, Role $role): bool
     {
-        return $user->hasPermission('roles.delete');
+        return $user->hasPermission('delete_roles');
     }
 
 }

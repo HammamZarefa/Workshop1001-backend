@@ -19,8 +19,11 @@ class Role extends Model
     }
 
     // helper
-    public function hasPermission(string $permissionName): bool
+    public function hasPermission($permissionName)
     {
-        return $this->permissions()->where('name', $permissionName)->exists();
+        return $this->permissions
+            ->pluck('name')
+            ->contains($permissionName);
     }
+
 }

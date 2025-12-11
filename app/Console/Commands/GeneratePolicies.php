@@ -6,30 +6,23 @@ use Illuminate\Console\Command;
 
 class GeneratePolicies extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'make:policies';
-
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Generate all system policies';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
         $policies = [
-            'RolePolicy' => 'Role',
+            'UserPolicy'       => 'User',
+            'RolePolicy'       => 'Role',
             'PermissionPolicy' => 'Permission',
-            'UserPolicy' => 'User',
+            'ProductPolicy'    => 'Product',
+            'CategoryPolicy'   => 'Category',
+            'BannerPolicy'     => 'Banner',
+            'CouponPolicy'     => 'Coupon',
+            'OrderPolicy'      => 'Order',
+            'CartPolicy'       => 'Cart',
+            'PaymentPolicy'    => 'Payment',
+
         ];
 
         foreach ($policies as $policy => $model) {
@@ -43,5 +36,4 @@ class GeneratePolicies extends Command
 
         $this->info('All policies created successfully!');
     }
-
 }

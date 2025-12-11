@@ -9,9 +9,14 @@ use App\Http\Requests\UpdatePermissionRequest;
 
 class PermissionController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Permission::class, 'permission');
+    }
+
     public function index()
     {
-        $permissions=Permission::paginate(10);
+        $permissions = Permission::paginate(10);
         return view('admin.permissions.index', compact('permissions'));
     }
 
