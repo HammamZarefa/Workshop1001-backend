@@ -14,15 +14,20 @@ use App\Notifications\OrderStatusChanged;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Order::class, 'order');
+    }
+
     protected function filteredQuery(Request $request)
     {
-        return (new OrderFilter($request))->apply(
-            Order::query()->with(['user', 'payment'])
-        );
+        return (new OrderFilter($request))
+            ->apply(Order::query()->with(['user', 'payment']));
     }
 
     public function index(Request $request)
     {
+
         $query = $this->filteredQuery($request);
 
         $allowed = ['id', 'created_at', 'total', 'status'];
@@ -40,33 +45,31 @@ class OrderController extends Controller
 
         return view('admin.orders.index', [
             'orders'  => $orders,
-            'filters' => $request->only([
-                'status','from_date','to_date','customer_id','q','sort_by','sort_dir'
-            ]),
+            'filters' => $request->only(['status','from_date','to_date','customer_id','q','sort_by','sort_dir']),
         ]);
     }
 
-    public function show($id)
+    public function show(Order $order)
     {
-        $order = Order::with(['items.product', 'user', 'payment'])->findOrFail($id);
+
+        $order->load(['items.product', 'user', 'payment']);
 
         return view('admin.orders.show', compact('order'));
     }
 
-
-    public function export(Request $request) : StreamedResponse
+    public function export(Request $request): StreamedResponse
     {
-        $query = $this->filteredQuery($request)->with('user');
+        // custom ability
+        $this->authorize('export', Order::class);
 
+        $query = $this->filteredQuery($request)->with('user');
         $filename = 'orders_export_' . now()->format('Ymd_His') . '.csv';
 
         return response()->streamDownload(function () use ($query) {
-
             $out = fopen('php://output', 'w');
 
             fputcsv($out, [
-                'Order ID', 'Customer Email', 'Status',
-                'Currency', 'Total', 'Created At'
+                'Order ID','Customer Email','Status','Currency','Total','Created At'
             ]);
 
             $query->orderBy('id')
@@ -84,19 +87,19 @@ class OrderController extends Controller
                 });
 
             fclose($out);
-
         }, $filename);
     }
 
-    public function addItem(Request $request, int $orderId)
+    public function addItem(Request $request, Order $order)
     {
+        // custom ability
+        $this->authorize('update', $order);
+
         $data = $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity'   => 'required|numeric|min:1',
             'note'       => 'nullable|string|max:500',
         ]);
-
-        $order = Order::with('items')->findOrFail($orderId);
 
         DB::transaction(function () use ($order, $data) {
             $product = Product::findOrFail($data['product_id']);
@@ -114,7 +117,7 @@ class OrderController extends Controller
                     'product_id' => $product->id,
                     'price'      => $product->price,
                     'quantity'   => $data['quantity'],
-                    'note'       => $data['note'] ?? null,
+                    'note'       => $data['note'],
                 ]);
             }
 
@@ -125,13 +128,15 @@ class OrderController extends Controller
             $order->update(['total' => $total]);
         });
 
-        return redirect()
-            ->route('admin.orders.show', $orderId)
+        return redirect()->route('admin.orders.show', $order->id)
             ->with('success', 'Item added successfully.');
     }
 
     public function productSearch(Request $request)
     {
+        // search for UI only — optional protection
+        $this->authorize('viewAny', Order::class);
+
         $q = (string) $request->query('q', '');
         $results = Product::query()
             ->when($q !== '', fn($qq) => $qq->where('title', 'like', "%$q%"))
@@ -142,101 +147,95 @@ class OrderController extends Controller
         return response()->json($results);
     }
 
-public function updateStatus(Request $request, Order $order)
-{
-    $request->validate([
-        'status' => 'required|string',
-    ]);
+    public function updateStatus(Request $request, Order $order)
+    {
+        $this->authorize('update', $order);
 
-    $newStatus = $request->status;
-    $oldStatus = $order->status;
-
-    // workflow
-    $allowed = [
-        'pending'    => ['processing'],
-        'processing' => ['shipped'],
-        'shipped'    => ['delivered'],
-    ];
-
-    if (!isset($allowed[$oldStatus]) || !in_array($newStatus, $allowed[$oldStatus])) {
-        return back()->withErrors(['status' => 'Invalid status transition.']);
-    }
-
-    DB::transaction(function () use ($order, $oldStatus, $newStatus) {
-
-        $order->update(['status' => $newStatus]);
-
-        OrderStatusLog::create([
-            'order_id' => $order->id,
-            'old_status' => $oldStatus,
-            'new_status' => $newStatus,
-            'admin_id' => auth()->id(),
+        $request->validate([
+            'status' => 'required|string',
         ]);
 
-        // SEND MAIL NOTIFICATION
-     if ($order->user) {
-            $order->user->notify(new OrderStatusChanged(
-                $order,
-                $oldStatus,
-                $newStatus
-            ));
-        }
-    });
-
-    return back()->with('success', 'Order status updated.');
-}
-
-
-public function cancel(Order $order, Request $request)
-{
-    if ($order->status === 'cancelled' || $order->status === 'delivered') {
-        return back()->withErrors(['error' => 'Cannot cancel this order.']);
-    }
-
-    $reason = $request->reason ?? 'No reason provided';
-
-    DB::transaction(function () use ($order, $reason) {
-
+        $newStatus = $request->status;
         $oldStatus = $order->status;
 
-        $order->update([
-            'status' => 'cancelled'
-        ]);
+        $allowed = [
+            'pending'    => ['processing'],
+            'processing' => ['shipped'],
+            'shipped'    => ['delivered'],
+        ];
 
-        // REFUND PAYMENT (ONLY IF WAS PAID)
-      $payment = $order->payment;
+        if (!isset($allowed[$oldStatus]) || !in_array($newStatus, $allowed[$oldStatus])) {
+            return back()->withErrors(['status' => 'Invalid status transition.']);
+        }
 
-if ($payment && $payment->status === 'paid') {
+        DB::transaction(function () use ($order, $oldStatus, $newStatus) {
+            $order->update(['status' => $newStatus]);
 
-    if (method_exists($payment, 'markAsRefunded')) {
-        $payment->markAsRefunded($reason);
-    } else {
-        $payment->update([
-            'status' => 'refunded',
-            'refund_reason' => $reason,
-            'refunded_at' => now(),
-        ]);
+            OrderStatusLog::create([
+                'order_id' => $order->id,
+                'old_status' => $oldStatus,
+                'new_status' => $newStatus,
+                'admin_id' => auth()->id(),
+            ]);
+
+            if ($order->user) {
+                $order->user->notify(new OrderStatusChanged(
+                    $order,
+                    $oldStatus,
+                    $newStatus
+                ));
+            }
+        });
+
+        return back()->with('success', 'Order status updated.');
     }
 
-}
+    public function cancel(Request $request, Order $order)
+    {
+        $this->authorize('cancel', $order);
 
-      OrderStatusLog::create([
-            'order_id'   => $order->id,
-            'old_status' => $oldStatus,
-            'new_status' => 'cancelled',
-            'admin_id'   => auth()->id(),
-        ]);
-
-
-        if ($order->user) {
-            $order->user->notify(new OrderStatusChanged(
-                $order,
-                $oldStatus,
-                'cancelled'
-            ));
+        if (in_array($order->status, ['cancelled', 'delivered'])) {
+            return back()->withErrors(['error' => 'Cannot cancel this order.']);
         }
-    });
 
-    return back()->with('success', 'Order cancelled successfully.');
-}
+        $reason = $request->reason ?? 'No reason provided';
+
+        DB::transaction(function () use ($order, $reason) {
+
+            $oldStatus = $order->status;
+
+            $order->update(['status' => 'cancelled']);
+
+            $payment = $order->payment;
+
+            if ($payment && $payment->status === 'paid') {
+                if (method_exists($payment, 'markAsRefunded')) {
+                    $payment->markAsRefunded($reason);
+                } else {
+                    $payment->update([
+                        'status' => 'refunded',
+                        'refund_reason' => $reason,
+                        'refunded_at' => now(),
+                    ]);
+                }
+            }
+
+            OrderStatusLog::create([
+                'order_id'   => $order->id,
+                'old_status' => $oldStatus,
+                'new_status' => 'cancelled',
+                'admin_id'   => auth()->id(),
+            ]);
+
+            if ($order->user) {
+                $order->user->notify(new OrderStatusChanged(
+                    $order,
+                    $oldStatus,
+                    'cancelled'
+                ));
+            }
+        });
+
+        return back()->with('success', 'Order cancelled successfully.');
+    }
 }

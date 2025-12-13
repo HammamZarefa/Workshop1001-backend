@@ -2,9 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Login</title>
     @vite('resources/css/app.css')
 </head>
+
 <body class="bg-gray-100 h-screen flex items-center justify-center">
 
     <div class="w-full max-w-md bg-white shadow-lg rounded-xl p-8">

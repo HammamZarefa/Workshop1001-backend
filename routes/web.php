@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\PaymentController;
 
@@ -37,10 +39,8 @@ Route::middleware(['is_admin'])
         // Dashboard + Home
         Route::get('/', [HomeController::class, 'index'])->name('home');
 
-
         // Logout
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
 
         // =======================
         // Orders
@@ -51,9 +51,9 @@ Route::middleware(['is_admin'])
         Route::post('orders/{order}/items', [OrderController::class, 'addItem'])->name('orders.items.add');
         Route::post('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status.update');
         Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+
         // Product search
         Route::get('products/search', [OrderController::class, 'productSearch'])->name('products.search');
-
 
         // =======================
         // Products CRUD
@@ -68,66 +68,45 @@ Route::middleware(['is_admin'])
         Route::delete('products/gallery/{media}', [ProductController::class, 'destroyGallery'])
             ->name('products.gallery.delete');
 
-
-
         // =======================
         // Categories
         // =======================
-
-    // عرض كل الcatigories (هرمية)
-    Route::get('/categories', [CategoryController::class, 'index'])
-        ->name('categories.index');
-
-    //عرض صفحة إنشاء catigory جديد
-    Route::get('/categories/create', [CategoryController::class, 'create'])
-    ->name('categories.create');
-
-    // عرض صفحة كاتيجوري معيّن
-    Route::get('/categories/{id}', [CategoryController::class, 'show'])
-        ->name('categories.show');
-
-
-    // إنشاء catigory جديد
-    Route::post('/categories', [CategoryController::class, 'store'])
-        ->name('categories.store');
-
-    // صفحة تعديل catigory
-    Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])
-        ->name('categories.edit');
-
-    // تحديث catigory
-    Route::put('/categories/{id}', [CategoryController::class, 'update'])
-        ->name('categories.update');
-
-    // حذف catigory
-    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])
-        ->name('categories.destroy');
-
-    // إعادة ترتيب  (Reorder)
-    Route::post('/categories/reorder', [CategoryController::class, 'reorder'])
-        ->name('categories.reorder');
-
+        Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+        Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+        Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
+        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+        Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+        Route::post('/categories/reorder', [CategoryController::class, 'reorder'])->name('categories.reorder');
 
         // =======================
         // Banners
         // =======================
+        Route::resource('banners', BannerController::class);
 
-    Route::resource('banners',BannerController::class);
+        // =======================
+        // Roles
+        // =======================
+        Route::resource('roles', RoleController::class);
 
-     // =======================
+        // =======================
+        // Permissions
+        // =======================
+        Route::resource('permissions', PermissionController::class);
+
+        // =======================
         // Coupons
         // =======================
+        Route::resource('coupons', CouponController::class);
+
 
     Route::resource('coupons',CouponController::class);
-
-     // =======================
-        // Payment
-        // =======================
+        // Payment  
     Route::post('payments/{payment}/refund', [PaymentController::class, 'refund'])->name('payments.refund');
     Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
     Route::get('payments/failed', [PaymentController::class, 'failed'])->name('payments.failed');
     Route::get('payments/statistics', [PaymentController::class, 'statistics'])->name('payments.statistics');
     Route::get('payments/reconciliation', [PaymentController::class, 'reconciliation'])->name('payments.reconciliation');
     Route::get('payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
-
     });

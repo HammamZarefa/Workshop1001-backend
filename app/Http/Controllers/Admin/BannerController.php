@@ -9,6 +9,11 @@ use App\Http\Requests\BannerRequest;
 
 class BannerController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Banner::class, 'banner');
+    }
+
     public function index()
     {
         $banners = Banner::withoutGlobalScope('is_active')->orderBy('sort_order')->get();

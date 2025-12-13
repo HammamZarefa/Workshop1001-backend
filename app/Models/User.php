@@ -10,10 +10,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use App\Http\Traits\HasPermissions;
+use App\Http\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, Notifiable, InteractsWithMedia, HasApiTokens;
+    use HasFactory, Notifiable, InteractsWithMedia, HasApiTokens ,HasPermissions ,HasRoles;
 
     /**
      * The attributes that are mass assignable.
