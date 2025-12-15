@@ -64,6 +64,11 @@
             <i class="fas fa-credit-card mr-3"></i>
             Payments
         </a>
+          <a href="{{ route('admin.settings.index') }}"
+             class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+              <i class="fas fa-cogs mr-3"></i>
+                 Settings
+        </a>
         </nav>
 
 
