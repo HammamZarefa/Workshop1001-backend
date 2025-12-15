@@ -39,3 +39,5 @@ bootstrap/compiled.php
 app/storage/
 public_html/storage
 public_html/hot
+/storage/app/firebase/firebase-service-account.json
+

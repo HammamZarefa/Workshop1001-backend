@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\v1\OnboardingController;
 use App\Http\Controllers\Api\v1\HomeController;
 use App\Http\Controllers\Api\v1\BannerController;
 use App\Http\Controllers\Api\v1\NotificationController;
+use App\Http\Controllers\Api\v1\FcmTokenController;
 
 
 Route::prefix('v1')->group(function () {
@@ -87,6 +88,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/notifications', [NotificationController::class, 'index']);
         Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     });
+    // FCM Token
+    Route::post('/fcm-token', [FcmTokenController::class, 'store']);
+
 
 
     // -----------------------------
