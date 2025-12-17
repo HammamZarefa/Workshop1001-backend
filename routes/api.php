@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\v1\BannerController;
 use App\Http\Controllers\Api\v1\NotificationController;
 
 
+
 Route::prefix('v1')->group(function () {
 
     // -----------------------------
@@ -87,7 +88,11 @@ Route::prefix('v1')->group(function () {
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index']);
         Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+        // FCM Token
+        Route::post('/fcm-token', [AuthController::class, 'updateFcmToken']);
     });
+
+
 
 
     // -----------------------------

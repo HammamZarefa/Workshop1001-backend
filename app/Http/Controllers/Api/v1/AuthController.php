@@ -15,9 +15,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
+use App\Http\Controllers\Api\ApiController;
+use App\Services\PushNotificationService;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
+    public function __construct(
+        protected PushNotificationService $pushService
+    ) {}
     public function register(RegisterRequest $request)
     {
         $data = $request->validated();
@@ -28,6 +33,8 @@ class AuthController extends Controller
             'password' => $data['password'],
             'phone' => $data['phone'],
             'address' => $data['address'],
+            'fcm_token'  => $data['fcm_token'] ?? null,
+            'firebase_token'=>$data['fcm_token'] ?? null,
         ]);
 
         $tokenName = $request->device_type ?? 'auth_token';
@@ -115,5 +122,29 @@ class AuthController extends Controller
             'message' => 'This password reset token is invalid or has expired.'
         ], 422);
     }
+    public function updateFcmToken(Request $request)
+    {
+        return $this->tryCall(function () use ($request) {
+
+            $request->validate([
+                'fcm_token' => 'required|string',
+            ]);
+
+            $user = auth()->user();
+
+            $user->update([
+                'fcm_token' => $request->fcm_token,
+            ]);
+            $this->pushService->sendToToken(
+                $request->fcm_token,
+                'Hello ',
+                'FCM is working successfully '
+            );
+            return [
+                'message' => 'FCM token updated successfully',
+            ];
+        });
+    }
+
 
 }

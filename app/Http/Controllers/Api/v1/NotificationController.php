@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use App\Notifications\GeneralNotification;
 
 class NotificationController extends Controller
 {
-    
+
     public function index(Request $request)
     {
         return response()->json([
@@ -19,7 +19,7 @@ class NotificationController extends Controller
     }
 
 
-    
+
     public function markAsRead($id, Request $request)
     {
         $user = $request->user();
