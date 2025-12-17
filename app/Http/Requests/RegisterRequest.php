@@ -28,6 +28,8 @@ class RegisterRequest extends FormRequest
             'password' => 'required|string|min:6',
             'phone' => ['required', 'regex:/^09\d{8}$/'],
             'address' => 'required|string|max:500',
+            'fcm_token'  => 'nullable|string',
+            'firebase_token'=>'nullable|string',
         ];
     }
 }
