@@ -52,12 +52,7 @@
                 Coupons
             </a>
             @endcan
-        </a>
-             <a href="{{ route('admin.coupons.index') }}"
-             class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-              <i class="fas fa-ticket-alt mr-3"></i>
-              Coupons
-        </a>
+        
 
           <a href="{{ route('admin.payments.index') }}"
            class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
@@ -68,6 +63,12 @@
              class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
               <i class="fas fa-cogs mr-3"></i>
                  Settings
+        </a>
+
+         <a href="{{ route('admin.notifications.index') }}"
+              class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                  <i class="fas fa-bell mr-3"></i>
+                 Notifications
         </a>
         </nav>
 

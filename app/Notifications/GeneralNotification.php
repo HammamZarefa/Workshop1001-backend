@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use App\Notifications\Channels\FcmChannel;
 
 class GeneralNotification extends Notification
 {
@@ -27,9 +28,29 @@ class GeneralNotification extends Notification
      * Get the notification channels.
      */
     public function via($notifiable)
-    {
-        return ['database'];
+{
+    $pref = $notifiable->notificationPreference;
+
+    if (! $pref) {
+        return ['database', FcmChannel::class];
     }
+
+    $channels = [];
+
+    if ($pref->database) {
+        $channels[] = 'database';
+    }
+
+    if ($pref->fcm) {
+        $channels[] = FcmChannel::class;
+    }
+
+    if ($pref->mail) {
+        $channels[] = 'mail';
+    }
+
+    return $channels;
+}
 
     /**
      * Data to store in database notifications table.
@@ -42,4 +63,14 @@ class GeneralNotification extends Notification
             'data' => $this->data
         ];
     }
+
+
+    public function toFcm($notifiable)
+    {
+    return [
+        'title' => $this->title,
+        'body'  => $this->message,
+        'data'  => $this->data,
+    ];
+}
 }

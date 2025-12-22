@@ -2,48 +2,48 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Notifications\GeneralNotification;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Notifications\DatabaseNotification;
 
-
-class NotificationController extends Controller
+class NotificationController extends ApiController
 {
-
-    public function index(Request $request)
+  public function index(Request $request): JsonResponse
     {
-        return response()->json([
-            'notifications' => $request->user()->notifications
-        ]);
+        $notifications = $request->user()
+            ->notifications()
+            ->latest()
+            ->paginate($this->perPage($request));
+
+        return $this->paginatedResponse($notifications);
     }
 
-
-
-    public function markAsRead($id, Request $request)
+    public function markAsRead(string $id, Request $request): JsonResponse
     {
-        $user = $request->user();
+        /** @var DatabaseNotification|null $notification */
+        $notification = $request->user()
+            ->notifications()
+            ->where('id', $id)
+            ->first();
 
-        if (!$user) {
-            return response()->json([
-                'message' => 'Unauthenticated'
-            ], 401);
-        }
-
-        $notification = $user->notifications()->find($id);
-
-        if (!$notification) {
-            return response()->json([
-                'message' => 'Notification not found'
-            ], 404);
+        if (! $notification) {
+            return $this->error('Notification not found', 404);
         }
 
         $notification->markAsRead();
 
-        return response()->json([
-            'message' => 'Notification marked as read successfully'
-        ]);
+        return $this->success(null, 'Notification marked as read');
     }
 
+ 
+    public function markAllAsRead(Request $request): JsonResponse
+    {
+        $request->user()
+            ->unreadNotifications
+            ->markAsRead();
+
+        return $this->success(null, 'All notifications marked as read');
+    }
 
 }
