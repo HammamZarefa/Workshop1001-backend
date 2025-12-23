@@ -29,7 +29,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/onboarding', [OnboardingController::class, 'index']);
     Route::get('/onboarding/{id}', [OnboardingController::class, 'show']);
 
-
+    //social login
+    Route::post('auth/social-login', [AuthController::class, 'socialLogin']);
     // -----------------------------
     // Protected Routes
     // -----------------------------
@@ -90,6 +91,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
         // FCM Token
         Route::post('/fcm-token', [AuthController::class, 'updateFcmToken']);
+
+
     });
 
 

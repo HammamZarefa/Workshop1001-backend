@@ -9,6 +9,7 @@ use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\FirebaseAuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -145,6 +146,36 @@ class AuthController extends ApiController
             ];
         });
     }
+    public function socialLogin(Request $request, FirebaseAuthService $firebase)
+    {
+        return $this->tryCall(function () use ($request, $firebase) {
 
+            $request->validate([
+                'id_token' => 'required|string',
+            ]);
+
+            $firebaseUser = $firebase->verifyIdToken($request->id_token);
+
+            $user = User::updateOrCreate(
+                ['firebase_id' => $firebaseUser['id']],
+                [
+                    'email'      => $firebaseUser['email'] ?? null,
+                    'first_name' => $firebaseUser['first_name'] ?? 'Test',
+                    'last_name'  => $firebaseUser['last_name'] ?? 'User',
+                    'name'       => $firebaseUser['name'] ?? 'Test User',
+                    'password'   => bcrypt(Str::random(32)),
+                ]
+            );
+
+
+            $token = $user->createToken('social_login')->plainTextToken;
+
+            return [
+                'user'  => $user,
+                'token' => $token,
+            ];
+
+        });
+    }
 
 }
