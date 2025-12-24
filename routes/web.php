@@ -12,7 +12,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\SettingController;
-
+use App\Http\Controllers\Admin\AdminNotificationController;
 // ==============================
 // Public Root
 // ==============================
@@ -118,5 +118,17 @@ Route::middleware(['is_admin'])
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
     Route::get('settings/edit', [SettingController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
+
+         // =======================
+        // Notifications
+        // =======================
+   Route::get('notifications', [AdminNotificationController::class, 'index'])
+    ->name('notifications.index');
+
+Route::get('notifications/create', [AdminNotificationController::class, 'create'])
+    ->name('notifications.create');
+
+Route::post('notifications', [AdminNotificationController::class, 'store'])
+    ->name('notifications.store');
 
     });

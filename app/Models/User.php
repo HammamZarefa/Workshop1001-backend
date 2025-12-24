@@ -77,5 +77,9 @@ class User extends Authenticatable implements HasMedia
     return $this->hasMany(Rating::class);
 }
 
+    public function notificationPreference()
+{
+    return $this->hasOne(NotificationPreference::class);
+}
 
 }
