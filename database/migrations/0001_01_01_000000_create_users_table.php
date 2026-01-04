@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->boolean('is_active')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('firebase_id')->unique();
+            $table->string('firebase_id')->nullable();
             $table->text('fcm_token')->nullable();
             $table->rememberToken();
             $table->timestamps();
