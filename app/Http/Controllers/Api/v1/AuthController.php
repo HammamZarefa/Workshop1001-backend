@@ -138,8 +138,7 @@ class AuthController extends ApiController
             ]);
             $this->pushService->sendToToken(
                 $request->fcm_token,
-                'Hello ',
-                'FCM is working successfully '
+                'Hello ',                'FCM is working successfully '
             );
             return [
                 'message' => 'FCM token updated successfully',
@@ -160,9 +159,8 @@ class AuthController extends ApiController
                 ['firebase_id' => $firebaseUser['id']],
                 [
                     'email'      => $firebaseUser['email'] ?? null,
-                    'first_name' => $firebaseUser['first_name'] ?? 'Test',
-                    'last_name'  => $firebaseUser['last_name'] ?? 'User',
-                    'name'       => $firebaseUser['name'] ?? 'Test User',
+                    'first_name' => $firebaseUser['first_name'] ?? null,
+                    'last_name'  => $firebaseUser['last_name'] ?? null,
                     'password'   => bcrypt(Str::random(32)),
                 ]
             );
