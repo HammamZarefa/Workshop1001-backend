@@ -35,7 +35,7 @@ class AuthController extends ApiController
             'phone' => $data['phone'],
             'address' => $data['address'],
             'fcm_token'  => $data['fcm_token'] ?? null,
-            'firebase_token'=>$data['fcm_token'] ?? null,
+            'firebase_id' => null,
         ]);
 
         $tokenName = $request->device_type ?? 'auth_token';

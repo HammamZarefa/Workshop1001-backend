@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Api\v1\Admin\AuditLogController;
 
 // ==============================
 // Public Root
@@ -30,7 +31,7 @@ Route::post('/admin/login', [AuthController::class, 'login'])
 // ==============================
 // Admin Protected Area
 // ==============================
-Route::middleware(['is_admin'])
+Route::middleware(['is_admin','audit.admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -98,5 +99,10 @@ Route::middleware(['is_admin'])
         // Coupons
         // =======================
         Route::resource('coupons', CouponController::class);
+
+        // Audit & Control
+        Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
+        Route::get('/audit-logs/export', [AuditLogController::class, 'export'])->name('audit-logs.export');
+
 
     });
