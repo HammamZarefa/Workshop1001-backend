@@ -117,6 +117,25 @@ class CartController extends ApiController
         );
     }
 
+    public function removeItem(Request $request, CartItem $item)
+    {
+        if ($item->cart->user_id !== auth()->id() || $item->cart->status !== 'pending') {
+            return jsonError('Unauthorized or invalid item', [], 403);
+        }
+
+        $item->delete();
+
+        $cart = $this->getUserCart();
+        if ($cart instanceof JsonResponse) {
+            return $this->ok('Item removed, cart is now empty', new CartResource(new Cart(['user_id' => auth()->id(), 'status' => 'pending'])));
+        }
+
+        $coupon = $this->resolveCoupon($request, $cart);
+        if ($coupon instanceof JsonResponse) $coupon = null; 
+
+        return $this->cartResponse($cart, $coupon);
+    }
+
 
     // -----------------------------------------------------
     // Helpers

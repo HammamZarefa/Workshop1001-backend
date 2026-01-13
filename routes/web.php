@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Api\v1\Admin\AuditLogController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\SettingController;
 
 // ==============================
 // Public Root
@@ -104,5 +106,22 @@ Route::middleware(['is_admin','audit.admin'])
         Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
         Route::get('/audit-logs/export', [AuditLogController::class, 'export'])->name('audit-logs.export');
 
+
+    Route::resource('coupons',CouponController::class);
+        // Payment
+    Route::post('payments/{payment}/refund', [PaymentController::class, 'refund'])->name('payments.refund');
+    Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
+    Route::get('payments/failed', [PaymentController::class, 'failed'])->name('payments.failed');
+    Route::get('payments/statistics', [PaymentController::class, 'statistics'])->name('payments.statistics');
+    Route::get('payments/reconciliation', [PaymentController::class, 'reconciliation'])->name('payments.reconciliation');
+    Route::get('payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+
+        // =======================
+        // Settings
+        // =======================
+
+    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::get('settings/edit', [SettingController::class, 'edit'])->name('settings.edit');
+    Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
 
     });

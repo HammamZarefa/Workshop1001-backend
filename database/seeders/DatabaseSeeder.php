@@ -34,7 +34,8 @@ class DatabaseSeeder extends Seeder
             PaymentSeeder::class,
             CartSeeder::class,
             CouponSeeder::class,
-            RolePermissionSeeder::class
+            RolePermissionSeeder::class,
+            SettingsSeeder::class
 
         ]);
         $this->call(OnboardingSeeder::class);
