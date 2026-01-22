@@ -33,20 +33,25 @@ class HomeController extends ApiController
         return $this->success('Products loaded', ProductResource::collection($products));
         });
     }
-
     public function getProductById($id)
     {
-
         return $this->tryCall(function () use ($id) {
-        $product = Product::with('category','ratings')->available()->findOrFail($id);
 
-        return $this->ok('Product loaded', [
-                'product'        => new ProductResource($product),
-                'average_rating' => round($product->averageRating(), 1),
-                'ratings'        => $product->ratings
-        ]);
-});
+            $product = Product::with('category','ratings')->available()->findOrFail($id);
+
+            $userRating = Rating::where('product_id', $product->id)
+                ->where('user_id', auth()->id())
+                ->value('rating') ?? 0;
+
+            return $this->ok('Product loaded', [
+                'product'         => new ProductResource($product),
+                'average_rating'  => round($product->averageRating(), 1),
+                'user_rating'     => $userRating,
+                'ratings'         => $product->ratings
+            ]);
+        });
     }
+
 
  public function filterProducts(ProductRequest $request)
 {

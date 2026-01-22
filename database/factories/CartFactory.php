@@ -12,7 +12,7 @@ class CartFactory extends Factory
     public function definition(): array
     {
         return [
-            'status' => 'active',
+            'status' => 'pending',
         ];
     }
 }

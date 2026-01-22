@@ -84,6 +84,7 @@ Route::prefix('v1')->group(function () {
         Route::get('carts', [CartController::class, 'activeCart'])->name('carts.index');
         Route::get('carts/{cart}', [CartController::class, 'show'])->name('carts.show');
         Route::post('carts', [CartController::class, 'store'])->name('carts.store');
+        Route::delete('carts/items/{item}', [CartController::class, 'removeItem'])->name('carts.items.remove');
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index']);
