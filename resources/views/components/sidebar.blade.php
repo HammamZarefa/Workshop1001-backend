@@ -52,6 +52,14 @@
                 Coupons
             </a>
             @endcan
+            @can('viewAny', App\Models\AuditLog::class)
+                <a href="{{ route('admin.audit-logs.index') }}"
+                   class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                    <i class="fas fa-shield-alt mr-3"></i>
+                    Audit Logs
+                </a>
+            @endcan
+
         </nav>
 
 

@@ -61,7 +61,6 @@ class AuditAdminActions
             'resource'   => $this->resolveResource($request),
             'resource_id'=> $this->resolveResourceId($request),
             'ip_address' => $request->ip(),
-            'created_at' => now(),
         ]);
     }
 

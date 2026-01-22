@@ -10,7 +10,7 @@ use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\CouponController;
-use App\Http\Controllers\Api\v1\Admin\AuditLogController;
+use App\Http\Controllers\Admin\AuditLogController;
 
 // ==============================
 // Public Root
@@ -101,8 +101,11 @@ Route::middleware(['is_admin','audit.admin'])
         Route::resource('coupons', CouponController::class);
 
         // Audit & Control
-        Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
-        Route::get('/audit-logs/export', [AuditLogController::class, 'export'])->name('audit-logs.export');
+        Route::get('/audit-logs', [AuditLogController::class, 'index'])
+            ->name('audit-logs.index');
+
+        Route::get('/audit-logs/export', [AuditLogController::class, 'export'])
+            ->name('audit-logs.export');
 
 
     });

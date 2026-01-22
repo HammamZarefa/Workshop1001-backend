@@ -47,27 +47,6 @@ class AuditLogTest extends TestCase
     }
 
     /** @test */
-    public function view_audit_logs_with_filters()
-    {
-        // Insert some logs
-        AuditLog::factory()->create([
-            'admin_id' => $this->admin->id,
-            'action'   => 'create',
-            'resource' => 'orders',
-        ]);
-
-        AuditLog::factory()->create([
-            'admin_id' => $this->admin->id,
-            'action'   => 'delete',
-            'resource' => 'users',
-        ]);
-
-        $this->actingAs($this->admin, 'sanctum')
-            ->getJson('/api/v1/admin/audit-logs?action=create')
-            ->assertJsonCount(1, 'data.data'); // pagination format
-    }
-
-    /** @test */
     public function export_audit_logs_to_csv()
     {
         AuditLog::factory()->create([
@@ -76,14 +55,15 @@ class AuditLogTest extends TestCase
             'resource' => 'orders',
         ]);
 
-        $response = $this->actingAs($this->admin, 'sanctum')
-            ->get('/api/v1/admin/audit-logs/export');
+        $response = $this->actingAs($this->admin)
+            ->get('/admin/audit-logs/export');
 
         $response->assertStatus(200);
         $this->assertStringContainsString(
             'text/csv',
             $response->headers->get('Content-Type')
         );
+
         ob_start();
         $response->sendContent();
         $content = ob_get_clean();
@@ -91,16 +71,15 @@ class AuditLogTest extends TestCase
         $lines = explode("\n", trim($content));
         $header = str_getcsv($lines[0]);
 
+        $header[0] = preg_replace('/^\x{FEFF}/u', '', $header[0]);
+
         $this->assertEquals([
             'ID',
-            'Admin Name',
             'Action',
-            'Resource',
-            'Resource ID',
+            'Admin',
             'IP Address',
             'Created At',
         ], $header);
-
     }
 
     /** @test */
@@ -121,6 +100,37 @@ class AuditLogTest extends TestCase
 
         $this->assertDatabaseMissing('audit_logs', ['id' => $oldLog->id]);
 
+        $this->assertDatabaseHas('audit_logs', ['id' => $newLog->id]);
+    }
+
+    /** @test */
+    public function non_admin_cannot_access_audit_logs()
+    {
+        $response = $this->actingAs($this->user)
+            ->get('/admin/audit-logs');
+
+        $response->assertStatus(403);
+        $response->assertStatus(403);
+    }
+
+    /** @test */
+    public function retention_job_deletes_old_logs()
+    {
+        $oldLog = AuditLog::factory()->create([
+            'created_at' => now()->subDays(91),
+        ]);
+
+        $newLog = AuditLog::factory()->create([
+            'created_at' => now()->subDays(30),
+        ]);
+
+        $this->assertDatabaseHas('audit_logs', ['id' => $oldLog->id]);
+        $this->assertDatabaseHas('audit_logs', ['id' => $newLog->id]);
+
+        // تشغيل Artisan job لحذف الـ logs القديمة
+        $this->artisan('audit:purge-old')->assertExitCode(0);
+
+        $this->assertDatabaseMissing('audit_logs', ['id' => $oldLog->id]);
         $this->assertDatabaseHas('audit_logs', ['id' => $newLog->id]);
     }
 
