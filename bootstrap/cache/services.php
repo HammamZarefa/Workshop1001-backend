@@ -35,7 +35,8 @@
     31 => 'Termwind\\Laravel\\TermwindServiceProvider',
     32 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
     33 => 'App\\Providers\\AppServiceProvider',
-    34 => 'App\\Providers\\FirebaseServiceProvider',
+    34 => 'App\\Providers\\EventServiceProvider',
+    35 => 'App\\Providers\\FirebaseServiceProvider',
   ),
   'eager' => 
   array (
@@ -58,7 +59,8 @@
     16 => 'Termwind\\Laravel\\TermwindServiceProvider',
     17 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
     18 => 'App\\Providers\\AppServiceProvider',
-    19 => 'App\\Providers\\FirebaseServiceProvider',
+    19 => 'App\\Providers\\EventServiceProvider',
+    20 => 'App\\Providers\\FirebaseServiceProvider',
   ),
   'deferred' => 
   array (
