@@ -22,6 +22,8 @@ class Order extends Model
         'discount_percentage',
         'currency',
         'total',
+        'stock_deducted_at',
+
     ];
 
     /*
@@ -59,16 +61,18 @@ class Order extends Model
         return ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
     }
 
-    public static function statusTransitions(): array
-    {
-        return [
-            'pending'    => ['processing', 'cancelled'],
-            'processing' => ['shipped', 'cancelled'],
-            'shipped'    => ['delivered'],
-            'delivered'  => [],
-            'cancelled'  => [],
-        ];
-    }
+   public static function statusTransitions(): array
+{
+    return [
+        'pending'    => ['paid', 'cancelled'],
+        'paid'       => ['processing', 'cancelled'],
+        'processing' => ['shipped', 'cancelled'],
+        'shipped'    => ['delivered'],
+        'delivered'  => [],
+        'cancelled'  => [],
+    ];
+}
+
 
     public function canTransitionTo(string $new): bool
     {

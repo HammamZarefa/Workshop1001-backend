@@ -9,6 +9,9 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use App\Events\OrderPaid;
+use App\Models\Order;
+use Illuminate\Support\Facades\Log;
 
 
 class PaymentController extends ApiController
@@ -36,15 +39,39 @@ public function index(Request $request)
 
         //      إنشاء عملية دفع جديدة
 
-    public function store(PaymentRequest $request)
-    {
-       $data = $request->validated();
+   public function store(PaymentRequest $request)
+{
+    $data = $request->validated();
 
+    $payment = DB::transaction(function () use ($data) {
+
+        // 1️⃣ إنشاء عملية الدفع
         $payment = Payment::create($data);
 
-        return $this->success('Payment created successfully', new PaymentResource($payment), 201);
+        // 2️⃣ جلب الطلب المرتبط
+        $order = Order::find($payment->order_id);
 
-    }
+        if (! $order) {
+            throw new \Exception('Order not found');
+        }
+
+        // 3️⃣ تحديث حالة الطلب
+        $order->update([
+            'status' => 'paid',
+        ]);
+
+        // 4️⃣ إطلاق الحدث 🔥 (خصم المخزون)
+        event(new OrderPaid($order));
+
+        return $payment;
+    });
+
+    return $this->success(
+        'Payment created successfully',
+        new PaymentResource($payment),
+        201
+    );
+}
 
 
   //    عرض عملية دفع واحدة
