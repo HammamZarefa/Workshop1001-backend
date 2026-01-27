@@ -22,7 +22,6 @@ Thumbs.db
 
 # Node & Build
 /node_modules
-/public/build
 /public/hot
 ./storage
 .idea
