@@ -40,13 +40,14 @@ class AuditLogController extends Controller
 
         $csv = "\xEF\xBB\xBF"; // UTF-8 BOM
 
-        $csv .= "ID,Action,Admin,IP Address,Created At\n";
+        $csv .= "ID,Action,Resource,Admin,IP Address,Created At\n";
 
         foreach ($logs as $log) {
             $adminName = $log->admin?->name ?? 'System';
 
             $csv .= "{$log->id},"
                 . "\"{$log->action}\","
+                . "\"{$log->resource}\","
                 . "\"{$adminName}\","
                 . "{$log->ip_address},"
                 . "{$log->created_at}\n";
