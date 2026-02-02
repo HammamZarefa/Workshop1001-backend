@@ -28,6 +28,11 @@
             <button class="bg-blue-600 text-white rounded px-3 py-1 text-sm hover:bg-blue-700">
                 Filter
             </button>
+            <a href="{{ route('admin.audit-logs.index') }}"
+               class="bg-gray-500 text-white rounded px-3 py-1 text-sm hover:bg-gray-600">
+                Clear
+            </a>
+
         </form>
 
 
