@@ -10,29 +10,29 @@ class AuditLogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = AuditLog::with('admin')->latest();
+        $logs = AuditLog::with('admin')
+            ->latest()
 
-        if ($request->filled('action')) {
-            $query->where('action', $request->action);
-        }
+            ->when($request->action, function ($q) use ($request) {
+                $q->where('action', $request->action);
+            })
 
-        if ($request->filled('from')) {
-            $query->whereDate('created_at', '>=', $request->from);
-        }
+            ->when($request->from, function ($q) use ($request) {
+                $q->whereDate('created_at', '>=', $request->from);
+            })
 
-        if ($request->filled('to')) {
-            $query->whereDate('created_at', '<=', $request->to);
-        }
+            ->when($request->to, function ($q) use ($request) {
+                $q->whereDate('created_at', '<=', $request->to);
+            })
 
-        if ($request->filled('admin_id')) {
-            $query->where('admin_id', $request->admin_id);
-        }
+            ->when($request->admin_id, function ($q) use ($request) {
+                $q->where('admin_id', $request->admin_id);
+            })
 
-        $logs = $query->paginate(20);
+            ->paginate(20);
 
         return view('admin.audit-logs.index', compact('logs'));
     }
-
 
     public function export()
     {
