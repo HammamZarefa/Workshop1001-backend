@@ -6,6 +6,7 @@
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold">Audit Logs</h1>
 
+
             <a href="{{ route('admin.audit-logs.export', request()->query()) }}"
                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                 Export CSV
@@ -27,6 +28,11 @@
             <button class="bg-blue-600 text-white rounded px-3 py-1 text-sm hover:bg-blue-700">
                 Filter
             </button>
+            <a href="{{ route('admin.audit-logs.index') }}"
+               class="bg-gray-500 text-white rounded px-3 py-1 text-sm hover:bg-gray-600">
+                Clear
+            </a>
+
         </form>
 
 
